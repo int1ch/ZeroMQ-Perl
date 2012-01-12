@@ -29,13 +29,6 @@ sub import {
 sub _get_serializer { $SERIALIZERS{$_[1]} }
 sub _get_deserializer { $DESERIALIZERS{$_[1]} }
 
-eval {
-    require JSON;
-    JSON->import(2.00);
-    register_read_type(json => \&JSON::decode_json);
-    register_write_type(json => \&JSON::encode_json);
-};
-
 1;
 __END__
 
@@ -58,7 +51,8 @@ ZMQ - A ZMQ2 wrapper for Perl
         $sock->sendmsg($msg);
     }
 
-    # json (if JSON.pm is available)
+    # json (if ZMQ::Serializer::JSON is available)
+    use ZMQ::Serializer::JSON;
     $sock->sendmsg_as( json => { foo => "bar" } );
     my $thing = $sock->recvmsg_as( "json" );
 
@@ -220,16 +214,8 @@ can be written as:
 
     my $complex_perl_data_structure = $sock->recvmsg_as( 'json' );
 
-If you have JSON.pm (must be 2.00 or above), then the JSON serializer / 
-deserializer is automatically enabled. If you want to tweak the serializer
-option, do something like this:
-
-    my $coder = JSON->new->utf8->pretty; # pretty print
-    ZMQ::register_write_type( json => sub { $coder->encode($_[0]) } );
-    ZMQ::register_read_type( json => sub { $coder->decode($_[0]) } );
-
-Note that this will have a GLOBAL effect. If you want to change only
-your application, use a name that's different from 'json'.
+No serializers are loaded by default. Look for ZMQ::Serializer::*
+namespace in CPAN.
 
 =head1 ASYNCHRONOUS I/O WITH ZEROMQ
 

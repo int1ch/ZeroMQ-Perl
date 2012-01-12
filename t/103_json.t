@@ -4,6 +4,7 @@ use Test::Requires 'JSON';
 
 BEGIN {
     use_ok 'ZMQ', qw(ZMQ_PAIR ZMQ_NOBLOCK);
+    use_ok 'ZMQ::Serializer::JSON';
 }
 
 {
