@@ -86,7 +86,7 @@ sub recvmsg_as {
         Carp::croak("No deserializer $type found");
     }
 
-    my $msg = $self->recvmsg( $flags, $flags );
+    my $msg = $self->recvmsg( $flags, $flags ) or return;
     $deserializer->( $msg->data );
 }
 
