@@ -137,7 +137,7 @@ BASIC USAGE
         $socket->sendmsg( $msg );
         $socket->sendmsg( "a simple message" );
 
-    In most cases using ZeroMQ::Message is redundunt, so you will most
+    In most cases using ZeroMQ::Message is redundant, so you will most
     likely use the string version.
 
     To receive, simply call "recvmsg()" on the socket
