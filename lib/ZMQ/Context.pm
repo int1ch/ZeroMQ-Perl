@@ -1,6 +1,6 @@
-package ZeroMQ::Context;
+package ZMQ::Context;
 use strict;
-use ZeroMQ::Raw ();
+use ZMQ::Raw ();
 
 sub new {
     my ($class, $nthreads) = @_;
@@ -9,7 +9,7 @@ sub new {
     }
 
     bless {
-        _ctxt => ZeroMQ::Raw::zmq_init($nthreads),
+        _ctxt => ZMQ::Raw::zmq_init($nthreads),
     }, $class;
 }
 
@@ -18,12 +18,12 @@ sub ctxt {
 }
 
 sub socket {
-    return ZeroMQ::Socket->new(@_); # $_[0] should contain the context
+    return ZMQ::Socket->new(@_); # $_[0] should contain the context
 }
 
 sub term {
     my $self = shift;
-    ZeroMQ::Raw::zmq_term($self->ctxt);
+    ZMQ::Raw::zmq_term($self->ctxt);
 }
 
 1;
@@ -32,14 +32,14 @@ __END__
 
 =head1 NAME
 
-ZeroMQ::Context - A 0MQ Context object
+ZMQ::Context - A 0MQ Context object
 
 =head1 SYNOPSIS
 
-  use ZeroMQ qw/:all/;
+  use ZMQ qw/:all/;
   
-  my $cxt = ZeroMQ::Context->new;
-  my $sock = ZeroMQ::Socket->new($cxt, ZMQ_REP);
+  my $cxt = ZMQ::Context->new;
+  my $sock = ZMQ::Socket->new($cxt, ZMQ_REP);
 
 =head1 DESCRIPTION
 
@@ -50,7 +50,7 @@ a 0MQ context.
 
 =head2 new($nthreads)
 
-Creates a new C<ZeroMQ::Context>.
+Creates a new C<ZMQ::Context>.
 
 Optional arguments: The number of io threads to use. Defaults to 1.
 
@@ -61,15 +61,15 @@ so don't do it unless you know what you're doing.
 
 =head2 socket($type)
 
-Short hand for ZeroMQ::Socket::new. 
+Short hand for ZMQ::Socket::new. 
 
 =head2 ctxt
 
-Return the underlying ZeroMQ::Raw::Context object
+Return the underlying ZMQ::Raw::Context object
 
 =head1 CAVEATS
 
-While in principle, C<ZeroMQ::Context> objects are thread-safe,
+While in principle, C<ZMQ::Context> objects are thread-safe,
 they are currently not cloned when a new Perl ithread is spawned.
 The variables in the new thread that contained the context in
 the parent thread will be a scalar reference to C<undef>
@@ -78,7 +78,7 @@ over the destructor calls.
 
 =head1 SEE ALSO
 
-L<ZeroMQ>, L<ZeroMQ::Socket>
+L<ZMQ>, L<ZMQ::Socket>
 
 L<http://zeromq.org>
 
@@ -92,7 +92,7 @@ Steffen Mueller, E<lt>smueller@cpan.orgE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-The ZeroMQ module is
+The ZMQ module is
 
 Copyright (C) 2010 by Daisuke Maki
 

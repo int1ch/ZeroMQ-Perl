@@ -1,14 +1,14 @@
 use strict;
 use Test::More;
 
-use_ok "ZeroMQ";
+use_ok "ZMQ";
 
 {
-    my $version = ZeroMQ::version();
+    my $version = ZMQ::version();
     ok $version;
     like $version, qr/^\d+\.\d+\.\d+$/, "dotted version string";
 
-    my ($major, $minor, $patch) = ZeroMQ::version();
+    my ($major, $minor, $patch) = ZMQ::version();
 
     is join('.', $major, $minor, $patch), $version, "list and scalar context";
 }

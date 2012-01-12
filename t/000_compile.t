@@ -1,8 +1,8 @@
 use strict;
 use Test::More;
-use_ok "ZeroMQ";
+use_ok "ZMQ";
 
-my ($major, $minor, $patch) = ZeroMQ::version();
+my ($major, $minor, $patch) = ZMQ::version();
 my $version = join('.', $major, $minor, $patch);
 my $warning = sprintf(<<EOM, $version);
 
@@ -16,15 +16,15 @@ does not terminate even when a signal is sent (in such cases you
 need to resort to using SIGKILL). 
 
 You should really be thinking about upgrading your libzmq to 2.1 or
-higher, and recompile ZeroMQ.pm against the new library.
+higher, and recompile ZMQ.pm against the new library.
 
 ***************
 
 EOM
 
 diag sprintf( 
-    "\n   This is ZeroMQ.pm version %s\n   Linked against zeromq2 %s\n%s",
-    $ZeroMQ::VERSION,
+    "\n   This is ZMQ.pm version %s\n   Linked against zeromq2 %s\n%s",
+    $ZMQ::VERSION,
     $version, 
     ($major + $minor / 10) < 2.1 ? $warning : ''
 );

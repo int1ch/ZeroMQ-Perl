@@ -6,8 +6,8 @@ use Test::Requires qw(
     Test::SharedFork
 );
 use Test::More;
-use ZeroMQ::Raw;
-use ZeroMQ::Constants qw(:all);
+use ZMQ::Raw;
+use ZMQ::Constants qw(:all);
 
 run();
 

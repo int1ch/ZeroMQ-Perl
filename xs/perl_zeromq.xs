@@ -65,7 +65,7 @@ PerlZMQ_Raw_Message_mg_find(pTHX_ SV* const sv, const MGVTBL* const vtbl){
 
     PerlZMQ_trace( "mg_find (Message)" );
     PerlZMQ_trace( " + SV %p", sv )
-    croak("ZeroMQ::Raw::Message: Invalid ZeroMQ::Raw::Message object was passed to mg_find");
+    croak("ZMQ::Raw::Message: Invalid ZMQ::Raw::Message object was passed to mg_find");
     return NULL; /* not reached */
 }
 
@@ -109,7 +109,7 @@ PerlZMQ_Raw_Context_mg_find(pTHX_ SV* const sv, const MGVTBL* const vtbl){
         }
     }
 
-    croak("ZeroMQ::Raw::Context: Invalid ZeroMQ::Raw::Context object was passed to mg_find");
+    croak("ZMQ::Raw::Context: Invalid ZMQ::Raw::Context object was passed to mg_find");
     return NULL; /* not reached */
 }
 
@@ -184,7 +184,7 @@ PerlZMQ_Raw_Socket_mg_find(pTHX_ SV* const sv, const MGVTBL* const vtbl){
         }
     }
 
-    croak("ZeroMQ::Socket: Invalid ZeroMQ::Socket object was passed to mg_find");
+    croak("ZMQ::Socket: Invalid ZMQ::Socket object was passed to mg_find");
     return NULL; /* not reached */
 }
 
@@ -196,13 +196,13 @@ PerlZMQ_free_string(void *data, void *hint) {
 
 #include "mg-xs.inc"
 
-MODULE = ZeroMQ    PACKAGE = ZeroMQ   PREFIX = PerlZMQ_
+MODULE = ZMQ    PACKAGE = ZMQ   PREFIX = PerlZMQ_
 
 PROTOTYPES: DISABLED
 
 BOOT:
     {
-        PerlZMQ_trace( "Booting Perl ZeroMQ" );
+        PerlZMQ_trace( "Booting Perl ZMQ" );
     }
 
 void
@@ -228,11 +228,11 @@ PerlZMQ_version()
             XSRETURN(3);
         }
 
-MODULE = ZeroMQ    PACKAGE = ZeroMQ::Constants 
+MODULE = ZMQ    PACKAGE = ZMQ::Constants 
 
 INCLUDE: const-xs.inc
 
-MODULE = ZeroMQ    PACKAGE = ZeroMQ::Raw  PREFIX = PerlZMQ_Raw_
+MODULE = ZMQ    PACKAGE = ZMQ::Raw  PREFIX = PerlZMQ_Raw_
 
 PROTOTYPES: DISABLED
 
@@ -240,7 +240,7 @@ PerlZMQ_Raw_Context *
 PerlZMQ_Raw_zmq_init( nthreads = 5 )
         int nthreads;
     PREINIT:
-        SV *class_sv = sv_2mortal(newSVpvn( "ZeroMQ::Raw::Context", 20 ));
+        SV *class_sv = sv_2mortal(newSVpvn( "ZMQ::Raw::Context", 20 ));
     CODE:
         PerlZMQ_trace( "START zmq_init" );
 #ifdef USE_ITHREADS
@@ -287,7 +287,7 @@ PerlZMQ_Raw_zmq_term( context )
 PerlZMQ_Raw_Message *
 PerlZMQ_Raw_zmq_msg_init()
     PREINIT:
-        SV *class_sv = sv_2mortal(newSVpvn( "ZeroMQ::Raw::Message", 20 ));
+        SV *class_sv = sv_2mortal(newSVpvn( "ZMQ::Raw::Message", 20 ));
         int rc;
     CODE:
         Newxz( RETVAL, 1, PerlZMQ_Raw_Message );
@@ -304,7 +304,7 @@ PerlZMQ_Raw_Message *
 PerlZMQ_Raw_zmq_msg_init_size( size )
         IV size;
     PREINIT:
-        SV *class_sv = sv_2mortal(newSVpvn( "ZeroMQ::Raw::Message", 20 ));
+        SV *class_sv = sv_2mortal(newSVpvn( "ZMQ::Raw::Message", 20 ));
         int rc;
     CODE: 
         Newxz( RETVAL, 1, PerlZMQ_Raw_Message );
@@ -322,7 +322,7 @@ PerlZMQ_Raw_zmq_msg_init_data( data, size = -1)
         SV *data;
         IV size;
     PREINIT:
-        SV *class_sv = sv_2mortal(newSVpvn( "ZeroMQ::Raw::Message", 20 ));
+        SV *class_sv = sv_2mortal(newSVpvn( "ZMQ::Raw::Message", 20 ));
         STRLEN x_data_len;
         char *sv_data = SvPV(data, x_data_len);
         char *x_data;
@@ -415,7 +415,7 @@ PerlZMQ_Raw_zmq_socket (ctxt, type)
         PerlZMQ_Raw_Context *ctxt;
         IV type;
     PREINIT:
-        SV *class_sv = sv_2mortal(newSVpvn( "ZeroMQ::Raw::Socket", 19 ));
+        SV *class_sv = sv_2mortal(newSVpvn( "ZMQ::Raw::Socket", 19 ));
     CODE:
         PerlZMQ_trace( "START zmq_socket" );
         Newxz( RETVAL, 1, PerlZMQ_Raw_Socket );
@@ -496,7 +496,7 @@ PerlZMQ_Raw_zmq_recvmsg(socket, flags = 0)
         PerlZMQ_Raw_Socket *socket;
         int flags;
     PREINIT:
-        SV *class_sv = sv_2mortal(newSVpvn( "ZeroMQ::Raw::Message", 20 ));
+        SV *class_sv = sv_2mortal(newSVpvn( "ZMQ::Raw::Message", 20 ));
         int rv;
         zmq_msg_t msg;
     CODE:
@@ -537,7 +537,7 @@ PerlZMQ_Raw_zmq_send(socket, message, size = -1, flags = 0)
     CODE:
         PerlZMQ_trace( "START zmq_send" );
         if (! SvOK(message))
-            croak("ZeroMQ::Raw::zmq_send(): NULL message passed");
+            croak("ZMQ::Raw::zmq_send(): NULL message passed");
 
         if ( size == -1 ) {
             message_buf = SvPV( message, size );
@@ -561,7 +561,7 @@ PerlZMQ_Raw_zmq_sendmsg(socket, message, flags = 0)
     CODE:
         PerlZMQ_trace( "START zmq_sendmsg" );
         if (message == NULL)
-            croak("ZeroMQ::Raw::zmq_sendmsg() NULL message passed");
+            croak("ZMQ::Raw::zmq_sendmsg() NULL message passed");
 
         RETVAL = zmq_sendmsg(socket->socket, message, flags);
         PerlZMQ_trace( " + zmq_sendmsg returned with rv '%d'", RETVAL );
@@ -569,12 +569,13 @@ PerlZMQ_Raw_zmq_sendmsg(socket, message, flags = 0)
     OUTPUT:
         RETVAL
 
+#define SOCKOPT_BUFSIZ 1024
 SV *
 PerlZMQ_Raw_zmq_getsockopt(sock, option)
         PerlZMQ_Raw_Socket *sock;
         int option;
     PREINIT:
-        char     buf[256];
+        char     buf[SOCKOPT_BUFSIZ];
         int      i;
         uint64_t u64;
         int64_t  i64;
@@ -587,6 +588,7 @@ PerlZMQ_Raw_zmq_getsockopt(sock, option)
             case ZMQ_FD:
             case ZMQ_LINGER:
             case ZMQ_RECONNECT_IVL:
+            case ZMQ_RECONNECT_IVL_MAX:
             case ZMQ_RCVMORE:
             case ZMQ_TYPE:
                 len = sizeof(i);
@@ -622,8 +624,15 @@ PerlZMQ_Raw_zmq_getsockopt(sock, option)
                 break;
 
             case ZMQ_IDENTITY:
-                len = sizeof(buf);
+                len = SOCKOPT_BUFSIZ;
                 status = zmq_getsockopt(sock->socket, option, &buf, &len);
+                if(status == 0)
+                    RETVAL = newSVpvn(buf, len);
+                break;
+            default:
+                len = SOCKOPT_BUFSIZ;
+                warn("Unknown sockopt type %d, assuming string.  Send patch", option);
+                RETVAL = zmq_setsockopt(sock->socket, option, buf, len);
                 if(status == 0)
                     RETVAL = newSVpvn(buf, len);
                 break;
@@ -736,7 +745,7 @@ PerlZMQ_Raw_zmq_poll( list, timeout = 0 )
             svr = hv_fetch( elm, "socket", 6, NULL );
             if (svr != NULL) {
                 MAGIC *mg;
-                if (! SvOK(*svr) || !sv_isobject( *svr) || ! sv_isa(*svr, "ZeroMQ::Raw::Socket")) {
+                if (! SvOK(*svr) || !sv_isobject( *svr) || ! sv_isa(*svr, "ZMQ::Raw::Socket")) {
                     Safefree( pollitems );
                     Safefree( callbacks );
                     croak("Invalid 'socket' given for index %d", i);

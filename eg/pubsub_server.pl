@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 use strict;
-use ZeroMQ qw(ZMQ_PUB);
+use ZMQ qw(ZMQ_PUB);
 
 my ($host, $port);
 
@@ -16,7 +16,7 @@ if (@ARGV >= 2) {
 $host ||= '127.0.0.1';
 $port ||= 5566;
 
-my $ctxt = ZeroMQ::Context->new();
+my $ctxt = ZMQ::Context->new();
 my $sock = $ctxt->socket(ZMQ_PUB);
 $sock->bind( "tcp://$host:$port" );
 

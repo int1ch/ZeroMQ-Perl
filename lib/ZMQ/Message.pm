@@ -1,10 +1,10 @@
-package ZeroMQ::Message;
+package ZMQ::Message;
 use strict;
 
 sub new {
     my ($class, $data) = @_;
     bless {
-        _message => ZeroMQ::Raw::zmq_msg_init_data( $data )
+        _message => ZMQ::Raw::zmq_msg_init_data( $data )
     }, $class;
 }
 
@@ -20,11 +20,11 @@ sub message {
 }
 
 sub data {
-    ZeroMQ::Raw::zmq_msg_data( $_[0]->message );
+    ZMQ::Raw::zmq_msg_data( $_[0]->message );
 }
 
 sub size {
-    ZeroMQ::Raw::zmq_msg_size( $_[0]->message );
+    ZMQ::Raw::zmq_msg_size( $_[0]->message );
 }
 
 1;
@@ -33,40 +33,40 @@ __END__
 
 =head1 NAME
 
-ZeroMQ::Message - A 0MQ Message object
+ZMQ::Message - A 0MQ Message object
 
 =head1 SYNOPSIS
 
-  use ZeroMQ qw/:all/;
+  use ZMQ qw/:all/;
   
-  my $cxt = ZeroMQ::Context->new;
-  my $sock = ZeroMQ::Socket->new($cxt, ZMQ_REP);
-  my $msg = ZeroMQ::Message->new($text);
+  my $cxt = ZMQ::Context->new;
+  my $sock = ZMQ::Socket->new($cxt, ZMQ_REP);
+  my $msg = ZMQ::Message->new($text);
   $sock->send($msg);
   my $anothermsg = $sock->recv;
 
 =head1 DESCRIPTION
 
-A C<ZeroMQ::Message> object represents a message
-to be passed over a C<ZeroMQ::Socket>.
+A C<ZMQ::Message> object represents a message
+to be passed over a C<ZMQ::Socket>.
 
 =head1 METHODS
 
 =head2 new
 
-Creates a new C<ZeroMQ::Message>.
+Creates a new C<ZMQ::Message>.
 
 Takes the data to send with the message as argument.
 
 =head2 new_from_message( $rawmsg )
 
-Creates a new C<ZeroMQ::Message>.
+Creates a new C<ZMQ::Message>.
 
-Takes a ZeroMQ::Raw::Message object as argument.
+Takes a ZMQ::Raw::Message object as argument.
 
 =head2 message
 
-Return the underlying ZeroMQ::Raw::Message object.
+Return the underlying ZMQ::Raw::Message object.
 
 =head2 size
 
@@ -78,7 +78,7 @@ Returns the data as a (potentially binary) string.
 
 =head1 SEE ALSO
 
-L<ZeroMQ>, L<ZeroMQ::Socket>, L<ZeroMQ::Context>
+L<ZMQ>, L<ZMQ::Socket>, L<ZMQ::Context>
 
 L<http://zeromq.org>
 
@@ -92,7 +92,7 @@ Steffen Mueller, E<lt>smueller@cpan.orgE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-The ZeroMQ module is
+The ZMQ module is
 
 Copyright (C) 2010 by Daisuke Maki
 

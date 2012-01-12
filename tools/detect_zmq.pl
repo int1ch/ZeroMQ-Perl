@@ -111,5 +111,4 @@ sub probe_pkgconfig {
 
         last;
     }
-
 }

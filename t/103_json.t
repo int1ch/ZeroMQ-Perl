@@ -3,16 +3,16 @@ use Test::More;
 use Test::Requires 'JSON';
 
 BEGIN {
-    use_ok 'ZeroMQ', qw(ZMQ_PAIR ZMQ_NOBLOCK);
+    use_ok 'ZMQ', qw(ZMQ_PAIR ZMQ_NOBLOCK);
 }
 
 {
     my $structure = { foo => "bar" };
 
-    my $cxt = ZeroMQ::Context->new;
-    isa_ok($cxt, 'ZeroMQ::Context');
+    my $cxt = ZMQ::Context->new;
+    isa_ok($cxt, 'ZMQ::Context');
     my $sock = $cxt->socket(ZMQ_PAIR); # Receiver
-    isa_ok($sock, 'ZeroMQ::Socket');
+    isa_ok($sock, 'ZMQ::Socket');
   
     $sock->bind("inproc://myPrivateSocket");
   
@@ -32,12 +32,12 @@ BEGIN {
 }
 
 {
-    my $cxt = ZeroMQ::Context->new;
-    isa_ok($cxt, 'ZeroMQ::Context');
+    my $cxt = ZMQ::Context->new;
+    isa_ok($cxt, 'ZMQ::Context');
     can_ok($cxt, 'socket');
 
     my $sock = $cxt->socket(ZMQ_PAIR); # Receiver
-    isa_ok($sock, 'ZeroMQ::Socket');
+    isa_ok($sock, 'ZMQ::Socket');
     $sock->bind("inproc://myPrivateSocket");
 
     my $client = $cxt->socket(ZMQ_PAIR); # sendmsger

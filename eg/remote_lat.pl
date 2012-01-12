@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use ZeroMQ qw/:all/;
+use ZMQ qw/:all/;
 use Time::HiRes qw/time/;
 
 if (@ARGV != 3) {
@@ -13,12 +13,12 @@ my $addr            = shift @ARGV;
 my $msg_size        = shift @ARGV;
 my $roundtrip_count = shift @ARGV;
 
-my $cxt = ZeroMQ::Context->new(1);
-my $sock = ZeroMQ::Socket->new($cxt, ZMQ_REQ);
+my $cxt = ZMQ::Context->new(1);
+my $sock = ZMQ::Socket->new($cxt, ZMQ_REQ);
 $sock->connect($addr);
 
 my $text = '0' x $msg_size;
-my $msg = ZeroMQ::Message->new($text);
+my $msg = ZMQ::Message->new($text);
 
 my $before = time();
 foreach (1..$roundtrip_count) {

@@ -3,12 +3,12 @@ use Test::More;
 use Test::Fatal;
 
 BEGIN {
-    use_ok "ZeroMQ::Constants", qw(
+    use_ok "ZMQ::Constants", qw(
         ZMQ_PUSH
         ZMQ_REP
         ZMQ_REQ
     );
-    use_ok "ZeroMQ::Raw", qw(
+    use_ok "ZMQ::Raw", qw(
         zmq_connect
         zmq_close
         zmq_init
@@ -21,13 +21,13 @@ subtest 'simple creation and destroy' => sub {
     is exception {
         my $context = zmq_init(1);
         my $socket  = zmq_socket( $context, ZMQ_REP );
-        isa_ok $socket, "ZeroMQ::Raw::Socket";
+        isa_ok $socket, "ZMQ::Raw::Socket";
     }, undef, "socket creation OK";
 
     is exception {
         my $context = zmq_init(1);
         my $socket  = zmq_socket( $context, ZMQ_REP );
-        isa_ok $socket, "ZeroMQ::Raw::Socket";
+        isa_ok $socket, "ZMQ::Raw::Socket";
         zmq_close( $socket );
     }, undef, "socket create, then zmq_close";
 
@@ -65,16 +65,16 @@ done_testing;
 __END__
 
 SKIP : {
-    eval { ZeroMQ::ZMQ_FD };
+    eval { ZMQ::ZMQ_FD };
     skip "ZMQ_FD not available on this version: $@", 2 if $@;
 
-    my $context = ZeroMQ::Context->new;
+    my $context = ZMQ::Context->new;
     my $socket = $context->socket(ZMQ_REP);
     $socket->bind("inproc://inmemory");
     my $client = $context->socket(ZMQ_REQ);
     $client->connect("inproc://inmemory");
 
-    my $handle = $socket->getsockopt( ZeroMQ::ZMQ_FD );
+    my $handle = $socket->getsockopt( ZMQ::ZMQ_FD );
     ok $handle;
     isa_ok $handle, "IO::Handle";
 

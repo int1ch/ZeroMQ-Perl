@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use ZeroMQ qw/:all/;
+use ZMQ qw/:all/;
 
 if (@ARGV != 3) {
   die <<HERE;
@@ -12,8 +12,8 @@ my $addr            = shift @ARGV;
 my $msg_size        = shift @ARGV;
 my $roundtrip_count = shift @ARGV;
 
-my $cxt = ZeroMQ::Context->new(1);
-my $sock = ZeroMQ::Socket->new($cxt, ZMQ_REP);
+my $cxt = ZMQ::Context->new(1);
+my $sock = ZMQ::Socket->new($cxt, ZMQ_REP);
 $sock->bind($addr);
 
 my $msg;

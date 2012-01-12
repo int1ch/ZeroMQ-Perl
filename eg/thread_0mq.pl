@@ -3,7 +3,7 @@ use warnings;
 use Config;
 
 use Time::HiRes qw/sleep time/;
-use ZeroMQ qw/:all/;
+use ZMQ qw/:all/;
 
 BEGIN {
   if ( $Config{useithreads} ) {
@@ -28,8 +28,8 @@ my $roundtrip_count = shift @ARGV;
 my $local_thr = threads->create( \&local );
 
 sub local {
-  my $cxt = ZeroMQ::Context->new(1);
-  my $sock = ZeroMQ::Socket->new( $cxt, ZMQ_REP );
+  my $cxt = ZMQ::Context->new(1);
+  my $sock = ZMQ::Socket->new( $cxt, ZMQ_REP );
   print "[local]  Trying to start at $addr \n";
 
   $sock->bind($addr);
@@ -46,13 +46,13 @@ sleep 0.1;
 my $remote_thr = threads->create( \&remote );
 
 sub remote {
-  my $cxt = ZeroMQ::Context->new(1);
-  my $sock = ZeroMQ::Socket->new( $cxt, ZMQ_REQ );
+  my $cxt = ZMQ::Context->new(1);
+  my $sock = ZMQ::Socket->new( $cxt, ZMQ_REQ );
 
   print "[remote] Trying to start at $addr \n";
   $sock->connect($addr);
   my $text = '0' x $msg_size;
-  my $msg  = ZeroMQ::Message->new($text);
+  my $msg  = ZMQ::Message->new($text);
 
   my $before = time();
   foreach ( 1 .. $roundtrip_count ) {

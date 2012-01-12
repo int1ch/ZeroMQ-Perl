@@ -1,8 +1,8 @@
 #!/usr/bin/env perl
 use strict;
-use ZeroMQ qw(ZMQ_REQ);
+use ZMQ qw(ZMQ_REQ);
 
-my $ctxt = ZeroMQ::Context->new();
+my $ctxt = ZMQ::Context->new();
 my $sock = $ctxt->socket(ZMQ_REQ);
 
 my ($host, $port);

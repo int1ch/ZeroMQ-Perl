@@ -2,17 +2,17 @@ use strict;
 use warnings;
 
 use Test::More;
-use ZeroMQ qw/:all/;
+use ZMQ qw/:all/;
 
 subtest 'Poller with callback' => sub {
-    my $ctxt = ZeroMQ::Context->new();
+    my $ctxt = ZMQ::Context->new();
     my $rep = $ctxt->socket(ZMQ_PAIR);
     $rep->bind("inproc://polltest");
     my $req = $ctxt->socket(ZMQ_PAIR);
     $req->connect("inproc://polltest");
 
     my $called = 0;
-    my $poller = ZeroMQ::Poller->new(
+    my $poller = ZMQ::Poller->new(
         {
             socket   => $rep,
             events   => ZMQ_POLLIN,
@@ -38,13 +38,13 @@ subtest 'Poller with callback' => sub {
 };
 
 subtest 'Poller with no callback' => sub {
-    my $ctxt = ZeroMQ::Context->new();
+    my $ctxt = ZMQ::Context->new();
     my $rep = $ctxt->socket(ZMQ_PAIR);
     $rep->bind("inproc://polltest");
     my $req = $ctxt->socket(ZMQ_PAIR);
     $req->connect("inproc://polltest");
 
-    my $poller = ZeroMQ::Poller->new(
+    my $poller = ZMQ::Poller->new(
         {
             socket   => $rep,
             events   => ZMQ_POLLIN,
@@ -57,13 +57,13 @@ subtest 'Poller with no callback' => sub {
 };
 
 subtest 'Poller with named poll item' => sub {
-    my $ctxt = ZeroMQ::Context->new();
+    my $ctxt = ZMQ::Context->new();
     my $rep = $ctxt->socket(ZMQ_PAIR);
     $rep->bind("inproc://polltest");
     my $req = $ctxt->socket(ZMQ_PAIR);
     $req->connect("inproc://polltest");
 
-    my $poller = ZeroMQ::Poller->new(
+    my $poller = ZMQ::Poller->new(
         {
             name    => 'test_item',
             socket  => $rep,

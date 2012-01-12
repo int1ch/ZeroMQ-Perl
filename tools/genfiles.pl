@@ -34,15 +34,15 @@ PerlZMQ_mg_dup(pTHX_ MAGIC* const mg, CLONE_PARAMS* const param) {
 EOM
     open my $src, '<', "xs/perl_zeromq.xs";
     my @perl_types = qw(
-        ZeroMQ::Raw::Context
-        ZeroMQ::Raw::Socket
-        ZeroMQ::Raw::Message
-        ZeroMQ::Raw::PollItem
+        ZMQ::Raw::Context
+        ZMQ::Raw::Socket
+        ZMQ::Raw::Message
+        ZMQ::Raw::PollItem
     );
     foreach my $perl_type (@perl_types) {
         my $c_type = $perl_type;
         $c_type =~ s/::/_/g;
-        $c_type =~ s/^ZeroMQ/PerlZMQ/;
+        $c_type =~ s/^ZMQ/PerlZMQ/;
         my $vtablename = sprintf '%s_vtbl', $c_type;
 
         # check if we have a function named ${c_type}_free and ${c_type}_mg_dup
@@ -126,9 +126,9 @@ sub write_typemap {
     my $file = shift;
 
     my @perl_types = qw(
-        ZeroMQ::Raw::Context
-        ZeroMQ::Raw::Socket
-        ZeroMQ::Raw::Message
+        ZMQ::Raw::Context
+        ZMQ::Raw::Socket
+        ZMQ::Raw::Message
     );
 
     open( my $out, '>', $file ) or
@@ -138,7 +138,7 @@ sub write_typemap {
     foreach my $perl_type (@perl_types) {
         my $c_type = $perl_type;
         $c_type =~ s/::/_/g;
-        $c_type =~ s/^ZeroMQ_/PerlZMQ_/;
+        $c_type =~ s/^ZMQ_/PerlZMQ_/;
         my $typemap_type = 'T_' . uc $c_type;
 
         push @decl, "$c_type* $typemap_type";

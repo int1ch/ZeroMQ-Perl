@@ -4,7 +4,7 @@ use Test::TCP;
 use Test::Requires 'Parallel::Prefork';
 use File::Temp;
 BEGIN {
-    use_ok "ZeroMQ", qw(ZMQ_REQ ZMQ_REP ZMQ_POLLOUT ZMQ_NOBLOCK);
+    use_ok "ZMQ", qw(ZMQ_REQ ZMQ_REP ZMQ_POLLOUT ZMQ_NOBLOCK);
 }
 
 my $parent;
@@ -12,7 +12,7 @@ test_tcp(
     server => sub {
         my $port = shift;
 
-        my $ctxt = ZeroMQ::Context->new;
+        my $ctxt = ZMQ::Context->new;
         my $socket = $ctxt->socket(ZMQ_REP);
         $socket->bind( "tcp://127.0.0.1:$port");
 
@@ -35,7 +35,7 @@ test_tcp(
                 $parent = $$;
                 $children{$pid}++;
             } else {
-                my $ctxt = ZeroMQ::Context->new();
+                my $ctxt = ZMQ::Context->new();
                 my $client = $ctxt->socket( ZMQ_REQ );
                 $client->connect("tcp://127.0.0.1:$port");
                 $client->send($$);

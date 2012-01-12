@@ -7,7 +7,7 @@ use File::Path ();
 use POSIX qw(SIGTERM);
 
 BEGIN {
-    use_ok "ZeroMQ", qw(ZMQ_REP ZMQ_REQ);
+    use_ok "ZMQ", qw(ZMQ_REP ZMQ_REQ);
 }
 
 my $dir = tempdir();
@@ -19,7 +19,7 @@ note "ipc $ipc";
 
 my $pid = Test::SharedFork->fork();
 if ($pid == 0) {
-    my $ctxt = ZeroMQ::Context->new();
+    my $ctxt = ZMQ::Context->new();
 
     my $child = $ctxt->socket( ZMQ_REQ );
     is $child->connect( $ipc ), 0, "conncet to $ipc successful";
@@ -35,7 +35,7 @@ if ($pid == 0) {
         File::Path::remove_tree($dir);
     };
 
-    my $ctxt = ZeroMQ::Context->new();
+    my $ctxt = ZMQ::Context->new();
     my $parent_sock = $ctxt->socket(ZMQ_REP);
     $parent_sock->bind( $ipc );
     sleep 1;

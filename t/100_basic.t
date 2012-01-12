@@ -3,11 +3,11 @@ use warnings;
 use File::Spec;
 
 use Test::More;
-use ZeroMQ qw/:all/;
+use ZMQ qw/:all/;
 use Storable qw/nfreeze thaw/;
 
 subtest 'connect before server socket is bound (should fail)' => sub {
-    my $cxt = ZeroMQ::Context->new;
+    my $cxt = ZMQ::Context->new;
     my $sock = $cxt->socket(ZMQ_PAIR); # Receiver
 
     # too early, server socket not created:
@@ -17,7 +17,7 @@ subtest 'connect before server socket is bound (should fail)' => sub {
 };
 
 subtest 'basic inproc communication' => sub {
-    my $cxt = ZeroMQ::Context->new;
+    my $cxt = ZMQ::Context->new;
     my $sock = $cxt->socket(ZMQ_PAIR); # Receiver
     eval {
         $sock->bind("inproc://myPrivateSocket");
@@ -33,13 +33,13 @@ subtest 'basic inproc communication' => sub {
     ok(!defined($sock->recvmsg(ZMQ_DONTWAIT())), "recvmsg before sendmsging anything should return nothing");
 
     {
-    my $msg = ZeroMQ::Message->new("Talk to me");
+    my $msg = ZMQ::Message->new("Talk to me");
     ok( $client->sendmsg( $msg ) > 0, "sendmsg");
     }
 
     # These tests are potentially dangerous when upgrades happen....
     # I thought of plain removing, but I'll leave it for now
-    my ($major, $minor, $micro) = ZeroMQ::version();
+    my ($major, $minor, $micro) = ZMQ::version();
     SKIP: {
         skip( "Need to be exactly zeromq 2.1.0", 3 )
             if ($major != 2 || $minor != 1 || $micro != 0);
@@ -61,10 +61,10 @@ subtest 'basic inproc communication' => sub {
         blah => 'blubb',
     };
     my $frozen = nfreeze($obj);
-    ok($client->sendmsg( ZeroMQ::Message->new($frozen) ) >= 0, "sendmsg successful");
+    ok($client->sendmsg( ZMQ::Message->new($frozen) ) >= 0, "sendmsg successful");
     $msg = $sock->recvmsg();
     ok(defined $msg, "received defined msg");
-    isa_ok($msg, 'ZeroMQ::Message');
+    isa_ok($msg, 'ZMQ::Message');
     is($msg->data(), $frozen, "got back same data");
     my $robj = thaw($msg->data);
     is_deeply($robj, $obj);
@@ -72,7 +72,7 @@ subtest 'basic inproc communication' => sub {
 
 
 subtest 'invalid bind' => sub {
-    my $cxt = ZeroMQ::Context->new(0); # must be 0 theads for in-process bind
+    my $cxt = ZMQ::Context->new(0); # must be 0 theads for in-process bind
     my $sock = $cxt->socket(ZMQ_REP); # server like reply socket
     eval {$sock->bind("bulls***");};
     ok($@ && "$@" =~ /Invalid argument/);

@@ -11,14 +11,14 @@ use warnings;
 use threads;
 use Test::More;
 use Test::Fatal;
-use ZeroMQ qw/:all/;
+use ZMQ qw/:all/;
 
 {
-    my $cxt = ZeroMQ::Context->new(1);
-    isa_ok($cxt, 'ZeroMQ::Context');
+    my $cxt = ZMQ::Context->new(1);
+    isa_ok($cxt, 'ZMQ::Context');
 
     my $main_socket = $cxt->socket(ZMQ_PUSH);
-    isa_ok($main_socket, "ZeroMQ::Socket");
+    isa_ok($main_socket, "ZMQ::Socket");
     $main_socket->close;
 
     my $t = threads->new(sub {
@@ -53,7 +53,7 @@ use ZeroMQ qw/:all/;
 }
 
 {
-    my $msg = ZeroMQ::Message->new( "Wee Woo" );
+    my $msg = ZMQ::Message->new( "Wee Woo" );
     my $t = threads->new( sub {
         return $msg->data eq "Wee Woo" &&
             $msg->size == 7;

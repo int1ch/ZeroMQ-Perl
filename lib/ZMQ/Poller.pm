@@ -1,8 +1,8 @@
-package ZeroMQ::Poller;
+package ZMQ::Poller;
 use strict;
 use warnings;
 
-use ZeroMQ::Raw qw(zmq_poll);
+use ZMQ::Raw qw(zmq_poll);
 use Scalar::Util qw(looks_like_number weaken);
 
 sub new {
@@ -78,7 +78,7 @@ sub _make_raw_poll_item {
 
     if ( defined $poll_item->{socket} ) {
         my $socket = $poll_item->{socket};
-        if ($socket->isa( 'ZeroMQ::Raw::Socket' ) ) {
+        if ($socket->isa( 'ZMQ::Raw::Socket' ) ) {
             $raw_poll_item->{socket} = $socket;
         } else {
             $raw_poll_item->{socket} = $socket->socket;
@@ -136,17 +136,17 @@ __END__
 
 =head1 NAME
 
-ZeroMQ::Poller - Convenient socket polling object
+ZMQ::Poller - Convenient socket polling object
 
 =head1 SYNOPSIS
 
-  use ZeroMQ qw/:all/;
+  use ZMQ qw/:all/;
 
-  my $cxt = ZeroMQ::Context->new()
-  my $sock = ZeroMQ::Socket->new($cxt, ZMQ_REP);
+  my $cxt = ZMQ::Context->new()
+  my $sock = ZMQ::Socket->new($cxt, ZMQ_REP);
   $sock->bind("inproc://amazingsocket");
 
-  my $poller = ZeroMQ::Poller->new(
+  my $poller = ZMQ::Poller->new(
     {
       name      => 'amazing',
       socket    => $sock,
@@ -161,13 +161,13 @@ ZeroMQ::Poller - Convenient socket polling object
 
 =head1 DESCRIPTION
 
-A C<ZeroMQ::Poller> watches zero or more sockets for events and signals that these have occurred in several ways.  Given a list of sockets and events to watch for, it can directly invoke a callback or simply raise a flag.
+A C<ZMQ::Poller> watches zero or more sockets for events and signals that these have occurred in several ways.  Given a list of sockets and events to watch for, it can directly invoke a callback or simply raise a flag.
 
 =head1 METHODS
 
 =head2 new(@poll_items)
 
-Creates a new C<ZeroMQ::Poller>
+Creates a new C<ZMQ::Poller>
 
 The constructor accepts a list of hash references ("poll items"), each of which specifies a socket or file descriptor to watch and what to watch it for.  In addition, each poll item may specify a callback to invoke or a name by which it may be queried.
 The accepted keys are:
@@ -176,7 +176,7 @@ The accepted keys are:
 
 =item socket
 
-Contains the C<ZeroMQ::Socket> item to poll.
+Contains the C<ZMQ::Socket> item to poll.
 
 =item fd
 

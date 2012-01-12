@@ -1,4 +1,7 @@
-Changelog for Perl module ZeroMQ.
+Changelog for Perl module ZMQ.
+
+
+  - Rename to ZMQ, in acordance to other language bindings
 
 0.19 Dec 08 2011
   - Fix socket/context destruction order (github #20).

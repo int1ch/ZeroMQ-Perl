@@ -1,8 +1,8 @@
 #!/usr/bin/env perl
 use strict;
 use threads;
-use ZeroMQ::Constants qw(ZMQ_XREQ ZMQ_XREP ZMQ_REQ ZMQ_REP ZMQ_QUEUE);
-use ZeroMQ::Raw;
+use ZMQ::Constants qw(ZMQ_XREQ ZMQ_XREP ZMQ_REQ ZMQ_REP ZMQ_QUEUE);
+use ZMQ::Raw;
 
 my $ctxt = zmq_init();
 my $clients = zmq_socket($ctxt, ZMQ_XREP);
@@ -44,4 +44,4 @@ for (1..5) {
     }, $ctxt );
 }
 
-ZeroMQ::Raw::zmq_device(ZMQ_QUEUE, $clients, $workers);
+ZMQ::Raw::zmq_device(ZMQ_QUEUE, $clients, $workers);

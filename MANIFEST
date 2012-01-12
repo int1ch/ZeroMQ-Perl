@@ -24,13 +24,13 @@ inc/Module/Install/TestTarget.pm
 inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
 inc/Module/Install/XSUtil.pm
-lib/ZeroMQ.pm
-lib/ZeroMQ/Constants.pm
-lib/ZeroMQ/Context.pm
-lib/ZeroMQ/Message.pm
-lib/ZeroMQ/Poller.pm
-lib/ZeroMQ/Raw.pm
-lib/ZeroMQ/Socket.pm
+lib/ZMQ.pm
+lib/ZMQ/Constants.pm
+lib/ZMQ/Context.pm
+lib/ZMQ/Message.pm
+lib/ZMQ/Poller.pm
+lib/ZMQ/Raw.pm
+lib/ZMQ/Socket.pm
 Makefile.PL
 MANIFEST			This list of files
 MANIFEST.SKIP

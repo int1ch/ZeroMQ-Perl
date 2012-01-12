@@ -1,7 +1,7 @@
-package ZeroMQ::Socket;
+package ZMQ::Socket;
 use strict;
 use Carp();
-use ZeroMQ ();
+use ZMQ ();
 
 use Scalar::Util qw(blessed);
 
@@ -17,7 +17,7 @@ BEGIN {
         my $code = << "EOSUB";
             sub $method {
                 my \$self = shift;
-                ZeroMQ::Raw::zmq_$method( \$self->socket, \@_ );
+                ZMQ::Raw::zmq_$method( \$self->socket, \@_ );
             }
 EOSUB
         eval $code;
@@ -28,12 +28,12 @@ EOSUB
 sub new {
     my ($class, $ctxt, @args) = @_;
 
-    if ( eval { $ctxt->isa( 'ZeroMQ::Context' ) } ) {
+    if ( eval { $ctxt->isa( 'ZMQ::Context' ) } ) {
         $ctxt = $ctxt->ctxt;
     }
 
     bless {
-        _socket => ZeroMQ::Raw::zmq_socket( $ctxt, @args ),
+        _socket => ZMQ::Raw::zmq_socket( $ctxt, @args ),
     }, $class;
 }
 
@@ -45,9 +45,9 @@ sub recvmsg {
     my ($self, $flags) = @_;
 
     $flags ||= 0;
-    my $rawmsg = ZeroMQ::Raw::zmq_recvmsg( $self->socket, $flags );
+    my $rawmsg = ZMQ::Raw::zmq_recvmsg( $self->socket, $flags );
     return $rawmsg ?
-        ZeroMQ::Message->new_from_message( $rawmsg ) :
+        ZMQ::Message->new_from_message( $rawmsg ) :
         ()
     ;
 }
@@ -59,7 +59,7 @@ sub send {
         $size = -1;
     }
     $flags ||= 0;
-    ZeroMQ::Raw::zmq_send( $self->socket, $msg, $size, $flags );
+    ZMQ::Raw::zmq_send( $self->socket, $msg, $size, $flags );
 }
 
 sub sendmsg {
@@ -70,18 +70,18 @@ sub sendmsg {
         Carp::croak( "sendmsg received non-blessed message" );
     }
 
-    if ($klass->isa('ZeroMQ::Message')) {
+    if ($klass->isa('ZMQ::Message')) {
         $msg = $msg->message;
     }
 
     $flags ||= 0;
-    ZeroMQ::Raw::zmq_sendmsg( $self->socket, $msg, $flags );
+    ZMQ::Raw::zmq_sendmsg( $self->socket, $msg, $flags );
 }
 
 sub recvmsg_as {
     my ($self, $type, $flags) = @_;
 
-    my $deserializer = ZeroMQ->_get_deserializer( $type );
+    my $deserializer = ZMQ->_get_deserializer( $type );
     if (! $deserializer ) {
         Carp::croak("No deserializer $type found");
     }
@@ -93,7 +93,7 @@ sub recvmsg_as {
 sub send_as {
     my ($self, $type, $data, $flags) = @_;
 
-    my $serializer = ZeroMQ->_get_serializer( $type );
+    my $serializer = ZMQ->_get_serializer( $type );
     if (! $serializer ) {
         Carp::croak("No serializer $type found");
     }
@@ -107,14 +107,14 @@ __END__
 
 =head1 NAME
 
-ZeroMQ::Socket - A 0MQ Socket object
+ZMQ::Socket - A 0MQ Socket object
 
 =head1 SYNOPSIS
 
-  use ZeroMQ qw/:all/;
+  use ZMQ qw/:all/;
   
-  my $cxt = ZeroMQ::Context->new;
-  my $sock = ZeroMQ::Socket->new($cxt, ZMQ_REP);
+  my $cxt = ZMQ::Context->new;
+  my $sock = ZMQ::Socket->new($cxt, ZMQ_REP);
 
 =head1 DESCRIPTION
 
@@ -178,9 +178,9 @@ participants.
 
 =head2 new
 
-Creates a new C<ZeroMQ::Socket>.
+Creates a new C<ZMQ::Socket>.
 
-First argument must be the L<ZeroMQ::Context> in which the socket
+First argument must be the L<ZMQ::Context> in which the socket
 is to live. Second argument is the socket type.
 
 The newly created socket is initially unbound, and not associated
@@ -265,7 +265,7 @@ for details regarding multi-part messages.
 =head2 recvmsg
 
 The C<my $msg = $sock-E<gt>recvmsg($flags)> method receives a message from
-the socket and returns it as a new C<ZeroMQ::Message> object.
+the socket and returns it as a new C<ZMQ::Message> object.
 If there are no messages available on the specified socket
 the C<recvmsg()> method blocks until the request can be satisfied.
 The flags argument is a combination of the flags defined below.
@@ -351,7 +351,7 @@ refer to the 0MQ manual:
 
 =head1 CAVEATS
 
-C<ZeroMQ::Socket> objects aren't thread safe due to the
+C<ZMQ::Socket> objects aren't thread safe due to the
 underlying library. Therefore, they are currently not cloned when
 a new Perl ithread is spawned. The variables in the new thread
 that contained the socket in the parent thread will be a
@@ -360,7 +360,7 @@ This makes the Perl wrapper thread safe (i.e. no segmentation faults).
 
 =head1 SEE ALSO
 
-L<ZeroMQ>, L<ZeroMQ::Socket>
+L<ZMQ>, L<ZMQ::Socket>
 
 L<http://zeromq.org>
 
@@ -374,7 +374,7 @@ Steffen Mueller, E<lt>smueller@cpan.orgE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-The ZeroMQ module is
+The ZMQ module is
 
 Copyright (C) 2010 by Daisuke Maki
 

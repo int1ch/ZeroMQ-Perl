@@ -1,13 +1,13 @@
-package ZeroMQ::Raw;
+package ZMQ::Raw;
 use strict;
 use XSLoader;
 
 BEGIN {
     our @ISA = qw(Exporter);
-    # XXX it's a hassle, but keep it in sync with ZeroMQ.pm
-    # by loading this here, we can make ZeroMQ::Raw independent
-    # of ZeroMQ while keeping the dist name as ZeroMQ
-    XSLoader::load('ZeroMQ', '0.19');
+    # XXX it's a hassle, but keep it in sync with ZMQ.pm
+    # by loading this here, we can make ZMQ::Raw independent
+    # of ZMQ while keeping the dist name as ZMQ
+    XSLoader::load('ZMQ', '0.19');
 }
 
 our @EXPORT = qw(
@@ -45,7 +45,7 @@ __END__
 
 =head1 NAME
 
-ZeroMQ::Raw - Low-level API for ZeroMQ
+ZMQ::Raw - Low-level API for ZMQ
 
 =head1 FUNCTIONS
 
@@ -108,7 +108,7 @@ Each element in @list_of_hashrefs should be a hashref containing the following k
 
 =item socket
 
-Contains the ZeroMQ::Raw::Socket object to poll.
+Contains the ZMQ::Raw::Socket object to poll.
 
 =item fd
 

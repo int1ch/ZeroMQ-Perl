@@ -1,15 +1,15 @@
-package ZeroMQ;
+package ZMQ;
 use strict;
 BEGIN {
     our $VERSION = '0.19';
     our @ISA = qw(Exporter);
 }
-use ZeroMQ::Raw ();
-use ZeroMQ::Context;
-use ZeroMQ::Socket;
-use ZeroMQ::Message;
-use ZeroMQ::Poller;
-use ZeroMQ::Constants;
+use ZMQ::Raw ();
+use ZMQ::Context;
+use ZMQ::Socket;
+use ZMQ::Message;
+use ZMQ::Poller;
+use ZMQ::Constants;
 use 5.008;
 use Carp ();
 use IO::Handle;
@@ -22,7 +22,7 @@ sub register_write_type { $SERIALIZERS{$_[0]} = $_[1] }
 sub import {
     my $class = shift;
     if (@_) {
-        ZeroMQ::Constants->export_to_level( 1, $class, @_ );
+        ZMQ::Constants->export_to_level( 1, $class, @_ );
     }
 }
 
@@ -41,14 +41,14 @@ __END__
 
 =head1 NAME
 
-ZeroMQ - A ZeroMQ2 wrapper for Perl
+ZMQ - A ZMQ2 wrapper for Perl
 
 =head1 SYNOPSIS ( HIGH-LEVEL API )
 
     # echo server
-    use ZeroMQ qw/:all/;
+    use ZMQ qw/:all/;
 
-    my $cxt = ZeroMQ::Context->new;
+    my $cxt = ZMQ::Context->new;
     my $sock = $cxt->socket(ZMQ_REP);
     $sock->bind($addr);
   
@@ -63,15 +63,15 @@ ZeroMQ - A ZeroMQ2 wrapper for Perl
     my $thing = $sock->recvmsg_as( "json" );
 
     # custom serialization
-    ZeroMQ::register_read_type(myformat => sub { ... });
-    ZeroMQ::register_write_type(myformat => sub { .. });
+    ZMQ::register_read_type(myformat => sub { ... });
+    ZMQ::register_write_type(myformat => sub { .. });
 
     $sock->sendmsg_as( myformat => $data ); # serialize using above callback
     my $thing = $sock->recvmsg_as( "myformat" );
 
 =head1 SYNOPSIS ( LOW-LEVEL API )
 
-    use ZeroMQ::Raw;
+    use ZMQ::Raw;
 
     my $ctxt = zmq_init($threads);
     my $rv   = zmq_term($ctxt);
@@ -126,42 +126,42 @@ If you want to compile with debugging on:
 
 =head1 DESCRIPTION
 
-The C<ZeroMQ> module is a wrapper of the 0MQ message passing library for Perl. 
+The C<ZMQ> module is a wrapper of the 0MQ message passing library for Perl. 
 It's a thin wrapper around the C API. Please read L<http://zeromq.org> for
-more details on ZeroMQ.
+more details on ZMQ.
 
 =head1 CLASS WALKTHROUGH
 
 =over 4
 
-=item ZeroMQ::Raw
+=item ZMQ::Raw
 
-Use L<ZeroMQ::Raw> to get access to the C API such as C<zmq_init>, C<zmq_socket>, et al. Functions provided in this low level API should follow the C API exactly.
+Use L<ZMQ::Raw> to get access to the C API such as C<zmq_init>, C<zmq_socket>, et al. Functions provided in this low level API should follow the C API exactly.
 
-=item ZeroMQ::Constants
+=item ZMQ::Constants
 
-L<ZeroMQ::Constants> contains all of the constants that are known to be extractable from zmq.h. Do note that sometimes the list changes due to additions/deprecations in the underlying zeromq2 library. We try to do our best to make things available (at least to warn you that some symbols are deprecated), but it may not always be possible.
+L<ZMQ::Constants> contains all of the constants that are known to be extractable from zmq.h. Do note that sometimes the list changes due to additions/deprecations in the underlying zeromq2 library. We try to do our best to make things available (at least to warn you that some symbols are deprecated), but it may not always be possible.
 
-=item ZeroMQ::Context
+=item ZMQ::Context
 
-=item ZeroMQ::Socket
+=item ZMQ::Socket
 
-=item ZeroMQ::Message
+=item ZMQ::Message
 
-L<ZeroMQ::Context>, L<ZeroMQ::Socket>, L<ZeroMQ::Message> contain the high-level, more perl-ish interface to the zeromq functionalities.
+L<ZMQ::Context>, L<ZMQ::Socket>, L<ZMQ::Message> contain the high-level, more perl-ish interface to the zeromq functionalities.
 
-=item ZeroMQ
+=item ZMQ
 
-Loading C<ZeroMQ> will make the L<ZeroMQ::Context>, L<ZeroMQ::Socket>, and 
-L<ZeroMQ::Message> classes available as well.
+Loading C<ZMQ> will make the L<ZMQ::Context>, L<ZMQ::Socket>, and 
+L<ZMQ::Message> classes available as well.
 
 =back
 
 =head1 BASIC USAGE
 
-To start using ZeroMQ, you need to create a context object, then as many ZeroMQ::Socket as you need:
+To start using ZMQ, you need to create a context object, then as many ZMQ::Socket as you need:
 
-    my $ctxt = ZeroMQ::Context->new;
+    my $ctxt = ZMQ::Context->new;
     my $socket = $ctxt->socket( ... options );
 
 You need to call C<bind()> or C<connect()> on the socket, depending on your usage. For example on a typical server-client model you would write on the server side:
@@ -174,40 +174,40 @@ and on the client side:
 
 The underlying zeromq library offers TCP, multicast, in-process, and ipc connection patterns. Read the zeromq manual for more details on other ways to setup the socket.
 
-When sendmsging data, you can either pass a ZeroMQ::Message object or a Perl string. 
+When sendmsging data, you can either pass a ZMQ::Message object or a Perl string. 
 
     # the following two sendmsg() calls are equivalent
-    my $msg = ZeroMQ::Message->new( "a simple message" );
+    my $msg = ZMQ::Message->new( "a simple message" );
     $socket->sendmsg( $msg );
     $socket->sendmsg( "a simple message" ); 
 
-In most cases using ZeroMQ::Message is redundunt, so you will most likely use the string version.
+In most cases using ZMQ::Message is redundunt, so you will most likely use the string version.
 
 To receive, simply call C<recvmsg()> on the socket
 
     my $msg = $socket->recvmsg;
 
-The received message is an instance of ZeroMQ::Message object, and you can access the content held in the message via the C<data()> method:
+The received message is an instance of ZMQ::Message object, and you can access the content held in the message via the C<data()> method:
 
     my $data = $msg->data;
 
 =head1 SERIALIZATION
 
-ZeroMQ.pm comes with a simple serialization/deserialization mechanism.
+ZMQ.pm comes with a simple serialization/deserialization mechanism.
 
 To serialize, use C<register_write_type()> to register a name and an
 associated callback to serialize the data. For example, for JSON we do
-the following (this is already done for you in ZeroMQ.pm if you have
+the following (this is already done for you in ZMQ.pm if you have
 JSON.pm installed):
 
     use JSON ();
-    ZeroMQ::register_write_type('json' => \&JSON::encode_json);
-    ZeroMQ::register_read_type('json' => \&JSON::decode_json);
+    ZMQ::register_write_type('json' => \&JSON::encode_json);
+    ZMQ::register_read_type('json' => \&JSON::decode_json);
 
 Then you can use C<sendmsg_as()> and C<recvmsg_as()> to specify the serialization 
 type as the first argument:
 
-    my $ctxt = ZeroMQ::Context->new();
+    my $ctxt = ZMQ::Context->new();
     my $sock = $ctxt->socket( ZMQ_REQ );
 
     $sock->sendmsg_as( json => $complex_perl_data_structure );
@@ -215,7 +215,7 @@ type as the first argument:
 The otherside will receive a JSON encoded data. The receivind side
 can be written as:
 
-    my $ctxt = ZeroMQ::Context->new();
+    my $ctxt = ZMQ::Context->new();
     my $sock = $ctxt->socket( ZMQ_REP );
 
     my $complex_perl_data_structure = $sock->recvmsg_as( 'json' );
@@ -225,15 +225,15 @@ deserializer is automatically enabled. If you want to tweak the serializer
 option, do something like this:
 
     my $coder = JSON->new->utf8->pretty; # pretty print
-    ZeroMQ::register_write_type( json => sub { $coder->encode($_[0]) } );
-    ZeroMQ::register_read_type( json => sub { $coder->decode($_[0]) } );
+    ZMQ::register_write_type( json => sub { $coder->encode($_[0]) } );
+    ZMQ::register_read_type( json => sub { $coder->decode($_[0]) } );
 
 Note that this will have a GLOBAL effect. If you want to change only
 your application, use a name that's different from 'json'.
 
 =head1 ASYNCHRONOUS I/O WITH ZEROMQ
 
-By default ZeroMQ comes with its own zmq_poll() mechanism that can handle
+By default ZMQ comes with its own zmq_poll() mechanism that can handle
 non-blocking sockets. You can use this by calling zmq_poll with a list of
 hashrefs:
 
@@ -253,7 +253,7 @@ hashrefs:
 Unfortunately this custom polling scheme doesn't play too well with AnyEvent.
 
 As of zeromq2-2.1.0, you can use getsockopt to retrieve the underlying file
-descriptor, so use that to integrate ZeroMQ and AnyEvent:
+descriptor, so use that to integrate ZMQ and AnyEvent:
 
     my $socket = zmq_socket( $ctxt, ZMQ_REP );
     my $fh = zmq_getsockopt( $socket, ZMQ_FD );
@@ -266,8 +266,8 @@ descriptor, so use that to integrate ZeroMQ and AnyEvent:
 
 =head1 NOTES ON MULTI-PROCESS and MULTI-THREADED USAGE
 
-ZeroMQ works on both multi-process and multi-threaded use cases, but you need
-to be careful bout sharing ZeroMQ objects.
+ZMQ works on both multi-process and multi-threaded use cases, but you need
+to be careful bout sharing ZMQ objects.
 
 For multi-process environments, you should not be sharing the context object.
 Create separate contexts for each process, and therefore you shouldn't
@@ -284,8 +284,8 @@ Returns the version of the underlying zeromq library that is being linked.
 In scalar context, returns a dotted version string. In list context,
 returns a 3-element list of the version numbers:
 
-    my $version_string = ZeroMQ::version();
-    my ($major, $minor, $patch) = ZeroMQ::version();
+    my $version_string = ZMQ::version();
+    my ($major, $minor, $patch) = ZMQ::version();
 
 =head2 register_read_type($name, \&callback)
 
@@ -308,11 +308,11 @@ you know which version of zeromq you're working with.
 
 =head1 SEE ALSO
 
-L<ZeroMQ::Raw>, L<ZeroMQ::Context>, L<ZeroMQ::Socket>, L<ZeroMQ::Message>
+L<ZMQ::Raw>, L<ZMQ::Context>, L<ZMQ::Socket>, L<ZMQ::Message>
 
 L<http://zeromq.org>
 
-L<http://github.com/lestrrat/ZeroMQ-Perl>
+L<http://github.com/lestrrat/ZMQ-Perl>
 
 =head1 AUTHOR
 
@@ -322,7 +322,7 @@ Steffen Mueller, C<< <smueller@cpan.org> >>
 
 =head1 COPYRIGHT AND LICENSE
 
-The ZeroMQ module is
+The ZMQ module is
 
 Copyright (C) 2010 by Daisuke Maki
 

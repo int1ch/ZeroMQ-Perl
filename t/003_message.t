@@ -2,8 +2,8 @@ use strict;
 use Test::More;
 use Test::Fatal;
 BEGIN {
-    use_ok "ZeroMQ::Message";
-    use_ok "ZeroMQ::Raw", qw(
+    use_ok "ZMQ::Message";
+    use_ok "ZMQ::Raw", qw(
         zmq_msg_init
         zmq_msg_init_data
         zmq_msg_init_size
@@ -17,8 +17,8 @@ BEGIN {
 
 subtest "sane allocation / cleanup for message" => sub {
     is exception {
-        my $msg = ZeroMQ::Raw::zmq_msg_init();
-        isa_ok $msg, "ZeroMQ::Raw::Message";
+        my $msg = ZMQ::Raw::zmq_msg_init();
+        isa_ok $msg, "ZMQ::Raw::Message";
         is zmq_msg_data( $msg ), '', "no message data";
         is zmq_msg_size( $msg ), 0, "data size is 0";
     }, undef, "code lives";
@@ -34,7 +34,7 @@ subtest "sane allocation / cleanup for message (init_data)" => sub {
     is exception {
         my $data = "TESTTEST";
         my $msg = zmq_msg_init_data( $data );
-        isa_ok $msg, "ZeroMQ::Raw::Message";
+        isa_ok $msg, "ZMQ::Raw::Message";
         is zmq_msg_data( $msg ), $data, "data matches";
         is zmq_msg_size( $msg ), length $data, "data size matches";
     }, undef, "code lives";
@@ -43,7 +43,7 @@ subtest "sane allocation / cleanup for message (init_data)" => sub {
 subtest "sane allocation / cleanup for message (init_size)" => sub {
     is exception {
         my $msg = zmq_msg_init_size(100);
-        isa_ok $msg, "ZeroMQ::Raw::Message";
+        isa_ok $msg, "ZMQ::Raw::Message";
 
         # don't check data(), as it will be populated with garbage
         is zmq_msg_size( $msg ), 100, "data size is 100";
@@ -64,7 +64,7 @@ subtest "copy / move" => sub {
 
 subtest "high level API" => sub {
     is exception {
-        my $msg = ZeroMQ::Message->new("data");
+        my $msg = ZMQ::Message->new("data");
     }, undef, "automatic garbage collection";
 };
 

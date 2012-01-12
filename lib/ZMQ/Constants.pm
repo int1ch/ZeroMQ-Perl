@@ -1,7 +1,7 @@
-package ZeroMQ::Constants;
+package ZMQ::Constants;
 use strict;
 use base qw(Exporter);
-use ZeroMQ ();
+use ZMQ ();
 
 # TODO: keep in sync with docs below and Makefile.PL
 
@@ -19,7 +19,7 @@ BEGIN {
         ZMQ_VERSION_MINOR
         ZMQ_VERSION_PATCH
     );
-    my $version = ZeroMQ::version();
+    my $version = ZMQ::version();
     foreach my $symbol (@possibly_nonexistent) {
         if (! __PACKAGE__->can($symbol) ) {
             no strict 'refs';
@@ -56,6 +56,7 @@ our %EXPORT_TAGS = (
         ZMQ_LINGER
         ZMQ_EVENTS
         ZMQ_RECONNECT_IVL
+        ZMQ_RECONNECT_IVL_MAX
         ZMQ_TYPE
         ZMQ_DONTWAIT
     ),
@@ -127,13 +128,13 @@ __END__
 
 =head1 NAME
 
-ZeroMQ::Constants - ZeroMQ Constants
+ZMQ::Constants - ZMQ Constants
 
 =head1 EXPORTS
 
 You may choose to import one or more (using the C<:all> import tag)
 constants into your namespace by supplying arguments to the
-C<use ZeroMQ> call as shown in the synopsis above.
+C<use ZMQ> call as shown in the synopsis above.
 
 The exportable constants are:
 
@@ -176,6 +177,8 @@ The exportable constants are:
 =item ZMQ_EVENTS
 
 =item ZMQ_RECONNECT_IVL
+
+=item ZMQ_RECONNECT_IVL_MAX
 
 =item ZMQ_TYPE
 

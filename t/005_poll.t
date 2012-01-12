@@ -3,8 +3,8 @@ use Test::More;
 use Test::Fatal;
 
 BEGIN {
-    use_ok "ZeroMQ::Raw";
-    use_ok "ZeroMQ::Constants", ":all";
+    use_ok "ZMQ::Raw";
+    use_ok "ZMQ::Constants", ":all";
 }
 
 subtest 'basic poll with regular fd' => sub {

@@ -2,7 +2,7 @@ use strict;
 use Test::More;
 use Test::Fatal;
 BEGIN {
-    use_ok "ZeroMQ::Raw", qw(
+    use_ok "ZMQ::Raw", qw(
         zmq_init
         zmq_term
     );
@@ -11,7 +11,7 @@ BEGIN {
 subtest 'sane creation/destroy' => sub {
     is exception {
         my $context = zmq_init(5);
-        isa_ok $context, "ZeroMQ::Raw::Context";
+        isa_ok $context, "ZMQ::Raw::Context";
         zmq_term( $context );
     }, undef, "sane allocation / cleanup for context";
 

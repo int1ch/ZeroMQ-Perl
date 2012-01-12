@@ -8,10 +8,10 @@ BEGIN {
     }
 }
 
-name 'ZeroMQ';
+name 'ZMQ';
 
 { # M::I is silly about multiple authors:
-    my $mainpm = 'lib/ZeroMQ.pm';
+    my $mainpm = 'lib/ZMQ.pm';
     name_from $mainpm;
     version_from $mainpm;
     perl_version_from $mainpm;
@@ -30,6 +30,37 @@ foreach my $env (qw(ZMQ_HOME ZMQ_H ZMQ_INCLUDES ZMQ_LIBS ZMQ_TRACE)) {
     printf " + %s = %s\n", $env, exists $ENV{$env} ? $ENV{$env} : "(null)";
 }
 
+if (-f $ENV{ZMQ_H}) {
+    printf "Detecting zmq version...\n";
+    open my $fh, '<', $ENV{ZMQ_H} or die;
+    my %version;
+    while (<$fh>) {
+        if (/#define\s+ZMQ_VERSION_(MAJOR|MINOR|PATCH)\s+(\d+)$/) {
+            $version{$1} = $2;
+        }
+    }
+
+    printf " + Detected libzmq version %d.%d.%d\n",
+        $version{MAJOR},
+        $version{MINOR},
+        $version{PATCH},
+    ;
+
+    if ( $version{MAJOR} * 10000 + $version{MINOR} * 100 + $VERSION{PATCH} < 30100) {
+        print <<EOM;
+*** WHAT THERE! ***
+
+We have detected that you have libzmq version lower than 3.1.x.
+ZMQ.pm only works with libzmq versions >= 3.1.0
+
+Make sure to set your ZMQ paths correctly, e.g.:
+
+    ZMQ_HOME=/usr/local/libzmq-3.1.0/ perl Makefile.PL
+EOM
+        exit 1;
+    }
+}
+
 # XXX As of Devel::CheckLib 0.93, it seems like LIBS = "-L/path/to/foo"
 # gets ignored (unlike what the docs say). So we manually strip and
 # re-arrange the paths here
@@ -40,7 +71,7 @@ assertlibs
     libpath => [ grep { -d $_ } map { s/^-L//; $_ } split /\s+/, $ENV{ZMQ_LIBS} ]
 ;
 
-repository 'http://github.com/lestrrat/ZeroMQ-Perl';
+repository 'http://github.com/lestrrat/ZMQ-Perl';
 requires 'Task::Weaken';
 test_requires 'Test::More', '0.98';
 test_requires 'Test::TCP' => '1.08';
@@ -61,11 +92,6 @@ if ($ENV{ZMQ_TRACE}) {
     cc_define qq|-DPERLZMQ_TRACE=$ENV{ZMQ_TRACE}|;
 }
 
-default_test_target 
-    env => {
-        LC_ALL => 'C'
-    }
-;
 author_tests 'xt';
 clean_files "xs/*.inc";
 
