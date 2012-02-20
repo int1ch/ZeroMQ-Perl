@@ -46,7 +46,7 @@ if (-f $ENV{ZMQ_H}) {
         $version{PATCH},
     ;
 
-    if ( $version{MAJOR} * 10000 + $version{MINOR} * 100 + $VERSION{PATCH} < 30100) {
+    if ( $version{MAJOR} * 10000 + $version{MINOR} * 100 + $version{PATCH} < 30100) {
         print <<EOM;
 *** WHAT THERE! ***
 

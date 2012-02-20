@@ -22,7 +22,7 @@ if ($pid == 0) {
     my $ctxt = ZMQ::Context->new();
 
     my $child = $ctxt->socket( ZMQ_REQ );
-    is $child->connect( $ipc ), 0, "conncet to $ipc successful";
+    is $child->connect( $ipc ), 0, "connect to $ipc successful";
     ok $child->send( "Hello from $$" ) > 0, "send successful";
 
     sleep 6;

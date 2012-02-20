@@ -534,18 +534,17 @@ PerlZMQ_Raw_zmq_send(socket, message, size = -1, flags = 0)
         int flags;
     PREINIT:
         char *message_buf;
+        STRLEN usize;
     CODE:
         PerlZMQ_trace( "START zmq_send" );
         if (! SvOK(message))
             croak("ZMQ::Raw::zmq_send(): NULL message passed");
 
-        if ( size == -1 ) {
-            message_buf = SvPV( message, size );
-        } else {
-            message_buf = SvPV_nolen( message );
-        }
+        message_buf = SvPV( message, usize );
+        if ( size != -1 && (STRLEN)size < usize )
+            usize = (STRLEN)size;
 
-        PerlZMQ_trace( " + buffer '%s' (%d)", message_buf, size );
+        PerlZMQ_trace( " + buffer '%s' (%zu)", message_buf, usize );
         PerlZMQ_trace( " + flags %d", flags);
         RETVAL = zmq_send( socket->socket, message_buf, size, flags );
         PerlZMQ_trace( " + zmq_send returned with rv '%d'", RETVAL );
@@ -629,10 +628,11 @@ PerlZMQ_Raw_zmq_getsockopt(sock, option)
                 if(status == 0)
                     RETVAL = newSVpvn(buf, len);
                 break;
+
             default:
                 len = SOCKOPT_BUFSIZ;
                 warn("Unknown sockopt type %d, assuming string.  Send patch", option);
-                RETVAL = zmq_setsockopt(sock->socket, option, buf, len);
+                status = zmq_setsockopt(sock->socket, option, buf, len);
                 if(status == 0)
                     RETVAL = newSVpvn(buf, len);
                 break;
