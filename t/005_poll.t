@@ -1,13 +1,15 @@
 use strict;
 use Test::More;
 use Test::Fatal;
+use Test::TCP;
 
 BEGIN {
     use_ok "ZMQ::Raw";
     use_ok "ZMQ::Constants", ":all";
 }
 
-subtest 'basic poll with regular fd' => sub {
+note 'basic poll with regular fd';
+{
     SKIP: {
         skip "Can't poll using fds on Windows", 2 if ($^O eq 'MSWin32');
         is exception {
@@ -24,41 +26,49 @@ subtest 'basic poll with regular fd' => sub {
     }
 };
 
-subtest 'poll with zmq sockets' => sub {
+note 'poll with zmq sockets';
+{
+    my $data = join ".", $$, {}, rand();
+
+    my $server = Test::TCP->new(code => sub {
+        my $port = shift;
+        my $ctxt = zmq_init();
+        my $rep = zmq_socket( $ctxt, ZMQ_PAIR );
+        is zmq_bind( $rep, "tcp://127.0.0.1:$port"), 0, "bind ok to 127.0.0.1:$port";
+
+        my $called = 0;
+        while (1) {
+            my $rv = zmq_poll([
+                {
+                    socket   => $rep,
+                    events   => ZMQ_POLLIN,
+                    callback => sub { $called++ }
+                },
+            ], 1) ;
+            if ($rv) {
+                my $msg = zmq_recvmsg( $rep );
+                if (ok $msg, "got message") {
+                    is zmq_msg_data($msg), $data, "data matches";
+                    zmq_send( $rep, "received" );
+                    is $called, 1, "zmq_poll's call back was called once";
+                }
+            }
+        }
+        exit 1;
+    } );
+
+    my $port = $server->port;
     my $ctxt = zmq_init();
-
-    my $ipcpath = "inproc://polltest";
-
-    my $rep = zmq_socket( $ctxt, ZMQ_PAIR );
-    is zmq_bind( $rep, $ipcpath), 0, "bind ok to $ipcpath";
-
     my $req = zmq_socket( $ctxt, ZMQ_PAIR );
-    is zmq_connect( $req, $ipcpath), 0, "connect ok $ipcpath";
+    is zmq_connect( $req, "tcp://127.0.0.1:$port"), 0, "connect ok 127.0.0.1:$port";
 
     my $called = 0;
     is exception {
-        my $data = "Test";
         if (! is zmq_send( $req, $data), length $data, "zmq_send ok") {
             die "Failed to send data";
         }
-
-        zmq_send( $rep, "TEST");
-        zmq_poll([
-            {
-                socket   => $rep,
-                events   => ZMQ_POLLIN,
-                callback => sub { $called++ }
-            },
-        ], 1) ;
-
-
-        my $msg = zmq_recvmsg( $rep );
-        if (ok $msg, "got message") {
-            is zmq_msg_data($msg), $data, "data matches";
-        }
+        zmq_recvmsg( $req );
     }, undef, "PollItem correctly handles callback";
-
-    is $called, 1, "zmq_poll's call back was called once";
 };
 
 done_testing;
