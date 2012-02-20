@@ -515,7 +515,7 @@ PerlZMQ_Raw_zmq_recvmsg(socket, flags = 0)
             PerlZMQ_trace(" + zmq_recvmsg got bad status, closing temporary message");
         } else {
             PerlZMQ_trace(" + message data (%s)", (char *) zmq_msg_data(&msg) );
-            PerlZMQ_trace(" + message size (%d)", zmq_msg_size(&msg) );
+            PerlZMQ_trace(" + message size (%d)", (int) zmq_msg_size(&msg) );
             Newxz(RETVAL, 1, PerlZMQ_Raw_Message);
             zmq_msg_init(RETVAL);
             zmq_msg_copy( RETVAL, &msg );
@@ -546,8 +546,12 @@ PerlZMQ_Raw_zmq_send(socket, message, size = -1, flags = 0)
 
         PerlZMQ_trace( " + buffer '%s' (%zu)", message_buf, usize );
         PerlZMQ_trace( " + flags %d", flags);
-        RETVAL = zmq_send( socket->socket, message_buf, size, flags );
+        RETVAL = zmq_send( socket->socket, message_buf, usize, flags );
         PerlZMQ_trace( " + zmq_send returned with rv '%d'", RETVAL );
+        if ( RETVAL == -1 ) {
+            PerlZMQ_trace( " ! zmq_send error %s", zmq_strerror( zmq_errno() ) );
+            PerlZMQ_set_bang( aTHX_ zmq_errno() );
+        }
         PerlZMQ_trace( "END zmq_send" );
     OUTPUT:
         RETVAL
@@ -564,6 +568,10 @@ PerlZMQ_Raw_zmq_sendmsg(socket, message, flags = 0)
 
         RETVAL = zmq_sendmsg(socket->socket, message, flags);
         PerlZMQ_trace( " + zmq_sendmsg returned with rv '%d'", RETVAL );
+        if ( RETVAL == -1 ) {
+            PerlZMQ_trace( " ! zmq_sendmsg error %s", zmq_strerror( zmq_errno() ) );
+            PerlZMQ_set_bang( aTHX_ zmq_errno() );
+        }
         PerlZMQ_trace( "END zmq_sendmsg" );
     OUTPUT:
         RETVAL
@@ -586,6 +594,7 @@ PerlZMQ_Raw_zmq_getsockopt(sock, option)
             case ZMQ_BACKLOG:
             case ZMQ_FD:
             case ZMQ_LINGER:
+            case ZMQ_RECOVERY_IVL:
             case ZMQ_RECONNECT_IVL:
             case ZMQ_RECONNECT_IVL_MAX:
             case ZMQ_RCVMORE:
@@ -597,7 +606,6 @@ PerlZMQ_Raw_zmq_getsockopt(sock, option)
                 break;
 
             case ZMQ_RATE:
-            case ZMQ_RECOVERY_IVL:
                 len = sizeof(i64);
                 status = zmq_getsockopt(sock->socket, option, &i64, &len);
                 if(status == 0)
@@ -676,7 +684,6 @@ PerlZMQ_Raw_zmq_setsockopt(sock, option, value)
                 break;
 
             case ZMQ_RATE:
-            case ZMQ_RECOVERY_IVL:
                 i64 = SvIV(value);
                 RETVAL = zmq_setsockopt(sock->socket, option, &i64, sizeof(int64_t));
                 break;
@@ -690,6 +697,9 @@ PerlZMQ_Raw_zmq_setsockopt(sock, option, value)
                 RETVAL = zmq_setsockopt(sock->socket, option, &u64, sizeof(uint64_t));
                 break;
 
+            case ZMQ_RECOVERY_IVL:
+            case ZMQ_RECONNECT_IVL:
+            case ZMQ_RECONNECT_IVL_MAX:
             case ZMQ_LINGER:
                 i = SvIV(value);
                 RETVAL = zmq_setsockopt(sock->socket, option, &i, sizeof(i));
