@@ -8,7 +8,6 @@ use Scalar::Util qw(blessed);
 BEGIN {
     my @map = qw(
         setsockopt
-        getsockopt
         bind
         connect
         close
@@ -17,12 +16,20 @@ BEGIN {
         my $code = << "EOSUB";
             sub $method {
                 my \$self = shift;
-                ZMQ::Raw::zmq_$method( \$self->socket, \@_ );
+                my \$rv   = ZMQ::Raw::zmq_$method( \$self->socket, \@_ );
+                if (\$rv != 0) {
+                    Carp::croak( "$method failed: \$!");
+                }
+                return \$rv;
             }
 EOSUB
         eval $code;
         die if $@;
     }
+}
+sub getsockopt {
+    my $self = shift;
+    return ZMQ::Raw::zmq_getsockopt( $self->socket, @_ );
 }
 
 sub new {
