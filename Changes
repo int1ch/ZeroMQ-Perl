@@ -2,6 +2,7 @@ Changelog for Perl module ZMQ.
 
 1.00_01 - Mar 13 2012
   [INCOMPATIBLE CHANGES]
+  - Support libzmq 3.1.x and up. Does not work with lower versions
   - Rename to ZMQ, in acordance to other language bindings
   - ZMQ::Raw::* functions will attempt to return what libzmq returns,
     as much as possible. For example, you no longer should expect
