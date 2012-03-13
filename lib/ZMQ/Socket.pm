@@ -27,6 +27,7 @@ EOSUB
         die if $@;
     }
 }
+
 sub getsockopt {
     my $self = shift;
     return ZMQ::Raw::zmq_getsockopt( $self->socket, @_ );
@@ -46,6 +47,11 @@ sub new {
 
 sub socket {
     $_[0]->{_socket};
+}
+
+sub recv {
+    my $self = shift;
+    return ZMQ::Raw::zmq_recv( $self->socket, @_ );
 }
 
 sub recvmsg {
@@ -138,7 +144,7 @@ For detailed explanations of the socket types, check the official
 
 =item Request-reply pattern
 
-The C<ZMQ_REQ> type is for the client that sendmsgs, then receives.
+The C<ZMQ_REQ> type is for the client that sends, then receives.
 The C<ZMQ_REP> type is for the server that receives a message, then answers.
 
 =item Publish-subscribe pattern
@@ -148,7 +154,7 @@ subscribers only. The C<ZMQ_SUB> type is for subscribers that receive messages.
 
 =item Pipeline pattern
 
-The C<ZMQ_UPSTREAM> socket type sendmsgs messages in a pipeline pattern.
+The C<ZMQ_UPSTREAM> socket type sends messages in a pipeline pattern.
 C<ZMQ_DOWNSTREAM> receives them.
 
 =item Exclusive pair pattern
@@ -221,14 +227,10 @@ see the documentation for C<bind($endpoint)> above.
 
 =head2 send ($scalar, $flag)
 
-=head2 send_as ($type, $scalar, $flag)
-
 =head2 sendmsg
 
 The C<sendmsg($msg, $flags)> method queues the given message to be sent to the
 socket. The flags argument is a combination of the flags defined below.
-
-=head2 sendmsg_as( $type, $message, $flags )
 
 =over 2
 
@@ -253,8 +255,6 @@ the socket and returns it as a new C<ZMQ::Message> object.
 If there are no messages available on the specified socket
 the C<recvmsg()> method blocks until the request can be satisfied.
 The flags argument is a combination of the flags defined below.
-
-=head2 recvmsg_as( $type, $flags )
 
 =over 2
 

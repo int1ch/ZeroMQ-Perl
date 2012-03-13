@@ -45,28 +45,44 @@ subtest 'basic inproc communication' => sub {
 
     ok(!defined($sock->recvmsg(ZMQ_DONTWAIT())), "recvmsg before sendmsging anything should return nothing");
 
-    {
-    my $msg = ZMQ::Message->new("Talk to me");
-    ok( $client->sendmsg( $msg ) > 0, "sendmsg");
-    }
-
     # These tests are potentially dangerous when upgrades happen....
     # I thought of plain removing, but I'll leave it for now
     my ($major, $minor, $micro) = ZMQ::version();
     SKIP: {
-        skip( "Need to be exactly zeromq 2.1.0", 3 )
-            if ($major != 2 || $minor != 1 || $micro != 0);
         ok(!$sock->getsockopt(ZMQ_RCVMORE), "no ZMQ_RCVMORE set");
         ok($sock->getsockopt(ZMQ_AFFINITY) == 0, "no ZMQ_AFFINITY");
         ok($sock->getsockopt(ZMQ_RATE) == 100, "ZMQ_RATE is at default 100");
     }
 
-    my $msg = $sock->recvmsg();
-    if ( ok(defined $msg, "received defined msg")) {
-        is($msg->data, "Talk to me", "received correct message");
+    {
+        my $msg = ZMQ::Message->new("Talk to me");
+        ok( $client->sendmsg( $msg ) > 0, "sendmsg");
+
+        $msg = $sock->recvmsg();
+        if ( ok(defined $msg, "received defined msg")) {
+            is($msg->data, "Talk to me", "received correct message");
+        }
     }
 
-    # now test with objects, just for kicks.
+    {
+        ok( $client->send( "Talk to me 2" ) > 0, "sendmsg");
+
+        my $msg = $sock->recvmsg();
+        if ( ok(defined $msg, "received defined msg")) {
+            is($msg->data, "Talk to me 2", "received correct message");
+        }
+    }
+
+    {
+        my $content = "Talk to me 3";
+        my $length  = length $content;
+        ok( $client->send( $content ) > 0, "sendmsg");
+
+        my $buf;
+        my $n_bytes = $sock->recv( $buf, $length );
+        is $n_bytes, $length, "received proper bytes";
+        is $buf, $content, "received correct message";
+    }
 
     my $obj = {
         foo => 'bar',
@@ -75,7 +91,7 @@ subtest 'basic inproc communication' => sub {
     };
     my $frozen = nfreeze($obj);
     ok($client->sendmsg( ZMQ::Message->new($frozen) ) >= 0, "sendmsg successful");
-    $msg = $sock->recvmsg();
+    my $msg = $sock->recvmsg();
     ok(defined $msg, "received defined msg");
     isa_ok($msg, 'ZMQ::Message');
     is($msg->data(), $frozen, "got back same data");

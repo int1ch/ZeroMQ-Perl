@@ -151,12 +151,12 @@ and on the client side:
 
 The underlying zeromq library offers TCP, multicast, in-process, and ipc connection patterns. Read the zeromq manual for more details on other ways to setup the socket.
 
-When sendmsging data, you can either pass a ZMQ::Message object or a Perl string. 
+When sending data, you can either pass a ZMQ::Message object or a Perl string. 
 
-    # the following two sendmsg() calls are equivalent
     my $msg = ZMQ::Message->new( "a simple message" );
     $socket->sendmsg( $msg );
-    $socket->sendmsg( "a simple message" ); 
+
+    $socket->send( "a simple message" ); 
 
 In most cases using ZMQ::Message is redundunt, so you will most likely use the string version.
 
@@ -167,6 +167,10 @@ To receive, simply call C<recvmsg()> on the socket
 The received message is an instance of ZMQ::Message object, and you can access the content held in the message via the C<data()> method:
 
     my $data = $msg->data;
+
+Or, you may choose use C<recv()>
+
+    my $data = $socket->recv();
 
 =head1 ASYNCHRONOUS I/O WITH ZEROMQ
 

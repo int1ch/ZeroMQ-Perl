@@ -469,7 +469,7 @@ PerlZMQ_Raw_zmq_connect(socket, addr)
         RETVAL = zmq_connect( socket->socket, addr );
         PerlZMQ_trace(" + zmq_connect returned with rv '%d'", RETVAL);
         if (RETVAL != 0) {
-            PerlZMQ_set_bang( aTHX_ zmq_errno() );
+            SET_BANG;
         }
         PerlZMQ_trace( "END zmq_connect" );
     OUTPUT:
@@ -485,12 +485,35 @@ PerlZMQ_Raw_zmq_bind(socket, addr)
         RETVAL = zmq_bind( socket->socket, addr );
         PerlZMQ_trace(" + zmq_bind returned with rv '%d'", RETVAL);
         if (RETVAL != 0) {
-            PerlZMQ_set_bang( aTHX_ zmq_errno() );
+            SET_BANG;
         }
         PerlZMQ_trace( "END zmq_bind" );
     OUTPUT:
         RETVAL
 
+int
+PerlZMQ_Raw_zmq_recv(socket, buf_sv, len, flags = 0)
+        PerlZMQ_Raw_Socket *socket;
+        SV *buf_sv;
+        size_t len;
+        int flags;
+    PREINIT:
+        char *buf;
+    CODE:
+        PerlZMQ_trace( "START zmq_recv" );
+        Newxz( buf, len, char );
+
+        RETVAL = zmq_recv( socket->socket, buf, len, flags );
+        PerlZMQ_trace(" + zmq_recv returned with rv '%d'", RETVAL);
+        if ( RETVAL == -1 ) {
+            SET_BANG;
+        } else {
+            sv_setpvn( buf_sv, buf, len );
+        }
+        PerlZMQ_trace( "END zmq_recv" );
+    OUTPUT:
+        RETVAL
+        
 PerlZMQ_Raw_Message *
 PerlZMQ_Raw_zmq_recvmsg(socket, flags = 0)
         PerlZMQ_Raw_Socket *socket;
@@ -505,7 +528,7 @@ PerlZMQ_Raw_zmq_recvmsg(socket, flags = 0)
         rv = zmq_msg_init(&msg);
         if (rv != 0) {
             PerlZMQ_trace("zmq_msg_init failed (%d)", rv);
-            PerlZMQ_set_bang( aTHX_ zmq_errno() );
+            SET_BANG;
             XSRETURN_UNDEF;
         }
         rv = zmq_recvmsg(socket->socket, &msg, flags);
@@ -552,7 +575,7 @@ PerlZMQ_Raw_zmq_send(socket, message, size = -1, flags = 0)
         PerlZMQ_trace( " + zmq_send returned with rv '%d'", RETVAL );
         if ( RETVAL == -1 ) {
             PerlZMQ_trace( " ! zmq_send error %s", zmq_strerror( zmq_errno() ) );
-            PerlZMQ_set_bang( aTHX_ zmq_errno() );
+            SET_BANG;
         }
         PerlZMQ_trace( "END zmq_send" );
     OUTPUT:
@@ -572,7 +595,7 @@ PerlZMQ_Raw_zmq_sendmsg(socket, message, flags = 0)
         PerlZMQ_trace( " + zmq_sendmsg returned with rv '%d'", RETVAL );
         if ( RETVAL == -1 ) {
             PerlZMQ_trace( " ! zmq_sendmsg error %s", zmq_strerror( zmq_errno() ) );
-            PerlZMQ_set_bang( aTHX_ zmq_errno() );
+            SET_BANG;
         }
         PerlZMQ_trace( "END zmq_sendmsg" );
     OUTPUT:
@@ -648,7 +671,7 @@ PerlZMQ_Raw_zmq_getsockopt(sock, option)
                 break;
         }
         if (status != 0) {
-            PerlZMQ_set_bang( aTHX_ zmq_errno() );
+            SET_BANG;
         }
     OUTPUT:
         RETVAL
@@ -701,7 +724,7 @@ PerlZMQ_Raw_zmq_setsockopt(sock, option, value)
                 RETVAL = zmq_setsockopt(sock->socket, option, ptr, len);
         }
         if (RETVAL == 0) {
-            PerlZMQ_set_bang( aTHX_ zmq_errno() );
+            SET_BANG;
         }
     OUTPUT:
         RETVAL
