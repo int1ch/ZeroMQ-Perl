@@ -1,7 +1,19 @@
 Changelog for Perl module ZMQ.
 
-
+1.00_01 - Mar 13 2012
+  [INCOMPATIBLE CHANGES]
   - Rename to ZMQ, in acordance to other language bindings
+  - ZMQ::Raw::* functions will attempt to return what libzmq returns,
+    as much as possible. For example, you no longer should expect
+    zmq_connect() to throw an exception when connect fails. Instead,
+    check for the return value
+  - Make sure to set $! when an error occurs
+  - ZMQ::Socket::* functions will now croak
+  - Serialization methods sendmsg_as/recvmsg_as are now in a separate
+    package (TODO: Move this out to a separate dist)
+
+
+--- BELOW are change logs for ZeroMQ.pm ---
 
 0.19 Dec 08 2011
   - Fix socket/context destruction order (github #20).

@@ -3,11 +3,13 @@ use strict;
 use XSLoader;
 
 BEGIN {
+    our $VERSION = '1.00_01';
+
     our @ISA = qw(Exporter);
     # XXX it's a hassle, but keep it in sync with ZMQ.pm
     # by loading this here, we can make ZMQ::Raw independent
     # of ZMQ while keeping the dist name as ZMQ
-    XSLoader::load('ZMQ', '0.19');
+    XSLoader::load('ZMQ', $VERSION);
 }
 
 our @EXPORT = qw(

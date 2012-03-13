@@ -1,5 +1,5 @@
 NAME
-    ZMQ - A ZMQ2 wrapper for Perl
+    ZMQ - A libzmq wrapper for Perl
 
 SYNOPSIS ( HIGH-LEVEL API )
         # echo server
@@ -15,24 +15,14 @@ SYNOPSIS ( HIGH-LEVEL API )
             $sock->sendmsg($msg);
         }
 
-        # json (if ZMQ::Serializer::JSON is available)
-        use ZMQ::Serializer::JSON;
-        $sock->sendmsg_as( json => { foo => "bar" } );
-        my $thing = $sock->recvmsg_as( "json" );
-
-        # custom serialization
-        ZMQ::register_read_type(myformat => sub { ... });
-        ZMQ::register_write_type(myformat => sub { .. });
-
-        $sock->sendmsg_as( myformat => $data ); # serialize using above callback
-        my $thing = $sock->recvmsg_as( "myformat" );
-
 SYNOPSIS ( LOW-LEVEL API )
         use ZMQ::Raw;
 
         my $ctxt = zmq_init($threads);
         my $rv   = zmq_term($ctxt);
 
+        my $rv   = zmq_connect( $socket, $where );
+        my $rv   = zmq_bind( $socket, $where );
         my $msg  = zmq_msg_init();
         my $msg  = zmq_msg_init_size( $size );
         my $msg  = zmq_msg_init_data( $data );
@@ -149,37 +139,6 @@ BASIC USAGE
 
         my $data = $msg->data;
 
-SERIALIZATION
-    ZMQ.pm comes with a simple serialization/deserialization mechanism.
-
-    To serialize, use "register_write_type()" to register a name and an
-    associated callback to serialize the data. For example, for JSON we do
-    the following (this is already done for you in ZMQ.pm if you have
-    JSON.pm installed):
-
-        use JSON ();
-        ZMQ::register_write_type('json' => \&JSON::encode_json);
-        ZMQ::register_read_type('json' => \&JSON::decode_json);
-
-    Then you can use "sendmsg_as()" and "recvmsg_as()" to specify the
-    serialization type as the first argument:
-
-        my $ctxt = ZMQ::Context->new();
-        my $sock = $ctxt->socket( ZMQ_REQ );
-
-        $sock->sendmsg_as( json => $complex_perl_data_structure );
-
-    The otherside will receive a JSON encoded data. The receivind side can
-    be written as:
-
-        my $ctxt = ZMQ::Context->new();
-        my $sock = $ctxt->socket( ZMQ_REP );
-
-        my $complex_perl_data_structure = $sock->recvmsg_as( 'json' );
-
-    No serializers are loaded by default. Look for ZMQ::Serializer::*
-    namespace in CPAN.
-
 ASYNCHRONOUS I/O WITH ZEROMQ
     By default ZMQ comes with its own zmq_poll() mechanism that can handle
     non-blocking sockets. You can use this by calling zmq_poll with a list
@@ -233,14 +192,27 @@ FUNCTIONS
         my $version_string = ZMQ::version();
         my ($major, $minor, $patch) = ZMQ::version();
 
-  register_read_type($name, \&callback)
-    Register a read callback for a given $name. This is used in
-    "recvmsg_as()". The callback receives the data received from the socket.
+DEBUGGING XS
+    If you see segmentation faults, and such, you need to figure out where
+    the error is occuring in order for the maintainers to figure out what
+    happened. Here's a very very brief explanation of steps involved.
 
-  register_write_type($name, \&callback)
-    Register a write callback for a given $name. This is used in
-    "sendmsg_as()" The callback receives the Perl structure given to
-    "sendmsg_as()"
+    First, make sure to compile ZeroMQ.pm with debugging on by specifying
+    -g:
+
+        perl Makefile.PL -g
+        make
+
+    Then fire gdb:
+
+        gdb perl
+        (gdb) R -Mblib /path/to/your/script.pl
+
+    When you see the crash, get a backtrace:
+
+        (gdb) bt
+
+    Please put this in your bug report.
 
 CAVEATS
     This is an early release. Proceed with caution, please report (or better

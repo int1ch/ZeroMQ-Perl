@@ -1,10 +1,11 @@
 package ZMQ;
 use strict;
+use ZMQ::Raw ();
 BEGIN {
-    our $VERSION = '0.19';
+    our $VERSION = $ZMQ::Raw::VERSION;
     our @ISA = qw(Exporter);
 }
-use ZMQ::Raw ();
+
 use ZMQ::Context;
 use ZMQ::Socket;
 use ZMQ::Message;
