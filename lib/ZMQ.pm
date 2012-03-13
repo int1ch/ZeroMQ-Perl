@@ -26,7 +26,7 @@ __END__
 
 =head1 NAME
 
-ZMQ - A ZMQ2 wrapper for Perl
+ZMQ - A libzmq wrapper for Perl
 
 =head1 SYNOPSIS ( HIGH-LEVEL API )
 
@@ -50,6 +50,8 @@ ZMQ - A ZMQ2 wrapper for Perl
     my $ctxt = zmq_init($threads);
     my $rv   = zmq_term($ctxt);
 
+    my $rv   = zmq_connect( $socket, $where );
+    my $rv   = zmq_bind( $socket, $where );
     my $msg  = zmq_msg_init();
     my $msg  = zmq_msg_init_size( $size );
     my $msg  = zmq_msg_init_data( $data );
