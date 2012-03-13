@@ -168,9 +168,11 @@ The received message is an instance of ZMQ::Message object, and you can access t
 
     my $data = $msg->data;
 
-Or, you may choose use C<recv()>
+Or, you may choose use C<recv()>, if you know the amount of data you wanted to read
 
-    my $data = $socket->recv();
+    my $buf;
+    my $length = ...;
+    my $n_read = $socket->recv( $buf, $length );
 
 =head1 ASYNCHRONOUS I/O WITH ZEROMQ
 
