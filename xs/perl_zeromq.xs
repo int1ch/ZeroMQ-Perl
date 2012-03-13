@@ -469,7 +469,7 @@ PerlZMQ_Raw_zmq_connect(socket, addr)
         RETVAL = zmq_connect( socket->socket, addr );
         PerlZMQ_trace(" + zmq_connect returned with rv '%d'", RETVAL);
         if (RETVAL != 0) {
-            croak( "%s", zmq_strerror( zmq_errno() ) );
+            PerlZMQ_set_bang( aTHX_ zmq_errno() );
         }
         PerlZMQ_trace( "END zmq_connect" );
     OUTPUT:
@@ -485,7 +485,7 @@ PerlZMQ_Raw_zmq_bind(socket, addr)
         RETVAL = zmq_bind( socket->socket, addr );
         PerlZMQ_trace(" + zmq_bind returned with rv '%d'", RETVAL);
         if (RETVAL != 0) {
-            croak( "%s", zmq_strerror( zmq_errno() ) );
+            PerlZMQ_set_bang( aTHX_ zmq_errno() );
         }
         PerlZMQ_trace( "END zmq_bind" );
     OUTPUT:
@@ -504,7 +504,9 @@ PerlZMQ_Raw_zmq_recvmsg(socket, flags = 0)
         RETVAL = NULL;
         rv = zmq_msg_init(&msg);
         if (rv != 0) {
-            croak("zmq_msg_init failed (%d)", rv);
+            PerlZMQ_trace("zmq_msg_init failed (%d)", rv);
+            PerlZMQ_set_bang( aTHX_ zmq_errno() );
+            XSRETURN_UNDEF;
         }
         rv = zmq_recvmsg(socket->socket, &msg, flags);
         PerlZMQ_trace(" + zmq_recvmsg with flags %d", flags);
@@ -645,21 +647,9 @@ PerlZMQ_Raw_zmq_getsockopt(sock, option)
                     RETVAL = newSVpvn(buf, len);
                 break;
         }
-        if(status != 0){
-        switch(_ERRNO) {
-            SET_BANG;
-            case EINTR:
-                    croak("The operation was interrupted by delivery of a signal");
-            case ETERM:
-                croak("The 0MQ context accociated with the specified socket was terminated");
-            case EFAULT:
-                croak("The provided socket was not valid");
-                case EINVAL:
-                    croak("Invalid argument");
-            default:
-                croak("Unknown error reading socket option");
+        if (status != 0) {
+            PerlZMQ_set_bang( aTHX_ zmq_errno() );
         }
-    }
     OUTPUT:
         RETVAL
 
@@ -709,6 +699,9 @@ PerlZMQ_Raw_zmq_setsockopt(sock, option, value)
                 warn("Unknown sockopt type %d, assuming string.  Send patch", option);
                 ptr = SvPV(value, len);
                 RETVAL = zmq_setsockopt(sock->socket, option, ptr, len);
+        }
+        if (RETVAL == 0) {
+            PerlZMQ_set_bang( aTHX_ zmq_errno() );
         }
     OUTPUT:
         RETVAL

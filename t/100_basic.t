@@ -6,14 +6,16 @@ use Test::More;
 use ZMQ qw/:all/;
 use Storable qw/nfreeze thaw/;
 
+$ENV{LC_ALL} = 'C';
+
 subtest 'connect before server socket is bound (should fail)' => sub {
     my $cxt = ZMQ::Context->new;
     my $sock = $cxt->socket(ZMQ_PAIR); # Receiver
 
     # too early, server socket not created:
     my $client = $cxt->socket(ZMQ_PAIR);
-    eval { $client->connect("inproc://myPrivateSocket"); };
-    ok($@ && "$@" =~ /Connection refused/);
+    isnt $client->connect("inproc://myPrivateSocket"), 0, "Connect should fail";
+    like "$!", qr/Connection refused/;
 };
 
 subtest 'basic inproc communication' => sub {
@@ -25,10 +27,7 @@ subtest 'basic inproc communication' => sub {
     ok !$@, "bind to inproc socket";
 
     my $client = $cxt->socket(ZMQ_PAIR); # sendmsger
-    eval {
-        $client->connect("inproc://myPrivateSocket");
-    };
-    ok !$@, "connect to inproc socket";
+    is $client->connect("inproc://myPrivateSocket"), 0, "Connect is successful";
 
     ok(!defined($sock->recvmsg(ZMQ_DONTWAIT())), "recvmsg before sendmsging anything should return nothing");
 
@@ -74,8 +73,8 @@ subtest 'basic inproc communication' => sub {
 subtest 'invalid bind' => sub {
     my $cxt = ZMQ::Context->new(0); # must be 0 theads for in-process bind
     my $sock = $cxt->socket(ZMQ_REP); # server like reply socket
-    eval {$sock->bind("bulls***");};
-    ok($@ && "$@" =~ /Invalid argument/);
+    isnt $sock->bind("bulls***"), 0, "bind should fail";
+    like "$!", qr/Invalid argument/;
 };
 
 done_testing;
