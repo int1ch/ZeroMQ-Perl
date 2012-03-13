@@ -18,6 +18,7 @@ sub ZMQ::Socket::recvmsg_as {
         Carp::croak("No deserializer $type found");
     }
 
+    # XXX Must return in order to accomodate for DONTBLOCK
     my $msg = $self->recvmsg( $flags, $flags ) or return;
     $deserializer->( $msg->data );
 }
