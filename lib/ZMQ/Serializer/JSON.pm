@@ -1,9 +1,10 @@
 package ZMQ::Serializer::JSON;
 use ZMQ;
+use ZMQ::Serializer;
 use JSON '2.00';
 
-ZMQ::register_read_type(json => \&JSON::decode_json);
-ZMQ::register_write_type(json => \&JSON::encode_json);
+ZMQ::Serializer::register_read_type(json => \&JSON::decode_json);
+ZMQ::Serializer::register_write_type(json => \&JSON::encode_json);
 
 1;
 

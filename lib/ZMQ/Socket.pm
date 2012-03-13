@@ -78,29 +78,6 @@ sub sendmsg {
     ZMQ::Raw::zmq_sendmsg( $self->socket, $msg, $flags );
 }
 
-sub recvmsg_as {
-    my ($self, $type, $flags) = @_;
-
-    my $deserializer = ZMQ->_get_deserializer( $type );
-    if (! $deserializer ) {
-        Carp::croak("No deserializer $type found");
-    }
-
-    my $msg = $self->recvmsg( $flags, $flags ) or return;
-    $deserializer->( $msg->data );
-}
-
-sub send_as {
-    my ($self, $type, $data, $flags) = @_;
-
-    my $serializer = ZMQ->_get_serializer( $type );
-    if (! $serializer ) {
-        Carp::croak("No serializer $type found");
-    }
-
-    $self->send( $serializer->( $data ), $flags );
-}
-
 1;
 
 __END__
