@@ -4,8 +4,6 @@ eg/hello_server.pl
 eg/local_lat.pl
 eg/pubsub_client.pl
 eg/pubsub_server.pl
-eg/pushpull_client.pl
-eg/pushpull_server.pl
 eg/remote_lat.pl
 eg/thread_0mq.pl
 eg/threaded_client.pl
@@ -20,7 +18,6 @@ inc/Module/Install/Fetch.pm
 inc/Module/Install/Makefile.pm
 inc/Module/Install/Metadata.pm
 inc/Module/Install/ReadmeFromPod.pm
-inc/Module/Install/TestTarget.pm
 inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
 inc/Module/Install/XSUtil.pm
@@ -30,6 +27,8 @@ lib/ZMQ/Context.pm
 lib/ZMQ/Message.pm
 lib/ZMQ/Poller.pm
 lib/ZMQ/Raw.pm
+lib/ZMQ/Serializer.pm
+lib/ZMQ/Serializer/JSON.pm
 lib/ZMQ/Socket.pm
 Makefile.PL
 MANIFEST			This list of files
@@ -58,25 +57,10 @@ xs/perl_zeromq.h
 xs/perl_zeromq.xs
 xt/100_eg_hello_world.t
 xt/101_eg_pubsub.t
-xt/102_eg_threaded.t
 xt/103_eg_xreqxrep.t
 xt/999_leak.t
 xt/999_pod-coverage.t
 xt/999_pod.t
-xt/compat_000_compile.t
-xt/compat_001_context.t
-xt/compat_002_socket.t
-xt/compat_003_message.t
-xt/compat_004_version.t
-xt/compat_005_poll.t
-xt/compat_006_anyevent.t
-xt/compat_100_basic.t
-xt/compat_101_threads.t
-xt/compat_103_json.t
-xt/compat_104_ipc.t
-xt/compat_105_poll.t
-xt/compat_rt64944.t
 xt/pubsub_stress.t
 xt/rt64836.t
-xt/rt64836_lowlevel.t
 xt/rt64944.t

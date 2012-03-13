@@ -59,3 +59,9 @@
 ^extlib\b
 ^autobuild
 
+# devel
+^libzmq3
+^ppport.h
+^xshelper.h
+^ZMQ-
+^test.sh
