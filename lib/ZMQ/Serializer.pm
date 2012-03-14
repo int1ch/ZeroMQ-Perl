@@ -19,7 +19,7 @@ sub ZMQ::Socket::recvmsg_as {
     }
 
     # XXX Must return in order to accomodate for DONTBLOCK
-    my $msg = $self->recvmsg( $flags, $flags ) or return;
+    my $msg = $self->recvmsg( $flags ) or return;
     $deserializer->( $msg->data );
 }
 
@@ -31,7 +31,8 @@ sub ZMQ::Socket::send_as {
         Carp::croak("No serializer $type found");
     }
 
-    $self->send( $serializer->( $data ), $flags );
+    my $body = $serializer->( $data );
+    $self->send( $body, bytes::length($body), $flags );
 }
 
 1;

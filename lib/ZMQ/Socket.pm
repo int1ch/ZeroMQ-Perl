@@ -229,7 +229,7 @@ If an error occurs ( C<zmq_connect()> returns a non-zero status ), then an excep
 
 =head2 close
 
-=head2 send ($scalar, $flag)
+=head2 send ($scalar, $lengh, $flag)
 
 =head2 sendmsg
 

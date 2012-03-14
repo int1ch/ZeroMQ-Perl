@@ -170,6 +170,24 @@ The exportable constants are:
 
 =item ZMQ_POLLERR
 
+=item ZMQ_DEALER
+
+=item ZMQ_DONTWAIT
+
+=item ZMQ_IPV4ONLY
+
+=item ZMQ_LAST_ENDPOINT
+
+=item ZMQ_MAXMSGSIZE
+
+=item ZMQ_MULTICAST_HOPS
+
+=item ZMQ_RCVTIMEO
+
+=item ZMQ_ROUTER
+
+=item ZMQ_SNDTIMEO
+
 =back
 
 =head2 C<:message> - Message Options
