@@ -119,13 +119,13 @@ BASIC USAGE
     connection patterns. Read the zeromq manual for more details on other
     ways to setup the socket.
 
-    When sendmsging data, you can either pass a ZMQ::Message object or a
-    Perl string.
+    When sending data, you can either pass a ZMQ::Message object or a Perl
+    string.
 
-        # the following two sendmsg() calls are equivalent
         my $msg = ZMQ::Message->new( "a simple message" );
         $socket->sendmsg( $msg );
-        $socket->sendmsg( "a simple message" );
+
+        $socket->send( "a simple message" );
 
     In most cases using ZMQ::Message is redundunt, so you will most likely
     use the string version.
@@ -138,6 +138,13 @@ BASIC USAGE
     access the content held in the message via the "data()" method:
 
         my $data = $msg->data;
+
+    Or, you may choose use "recv()", if you know the amount of data you
+    wanted to read
+
+        my $buf;
+        my $length = ...;
+        my $n_read = $socket->recv( $buf, $length );
 
 ASYNCHRONOUS I/O WITH ZEROMQ
     By default ZMQ comes with its own zmq_poll() mechanism that can handle

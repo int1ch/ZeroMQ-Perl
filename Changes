@@ -1,5 +1,12 @@
 Changelog for Perl module ZMQ.
 
+1.00_02 - Mar 14 2012
+  [DOCUMENTATION]
+  - Update and make sure to introduce send/recv along sendmsg/recvmsg
+  [INCOMPATIBLE CHANGES]
+  - Re-introduce zmq_send() (note, it's not the same zmq_recv() as in 2.x)
+  - Add zmq_errno()
+
 1.00_01 - Mar 13 2012
   [INCOMPATIBLE CHANGES]
   - Support libzmq 3.1.x and up. Does not work with lower versions

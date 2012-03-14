@@ -3,7 +3,7 @@ use strict;
 use XSLoader;
 
 BEGIN {
-    our $VERSION = '1.00_01';
+    our $VERSION = '1.00_02';
 
     our @ISA = qw(Exporter);
     # XXX it's a hassle, but keep it in sync with ZMQ.pm
