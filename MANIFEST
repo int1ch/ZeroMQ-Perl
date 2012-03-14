@@ -43,6 +43,7 @@ t/003_message.t
 t/004_version.t
 t/005_poll.t
 t/006_anyevent.t
+t/099_constants.t
 t/100_basic.t
 t/101_threads.t
 t/103_json.t
