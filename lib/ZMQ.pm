@@ -50,6 +50,7 @@ ZMQ - A libzmq wrapper for Perl
 
     my $ctxt = zmq_init($threads);
     my $rv   = zmq_term($ctxt);
+    my $num  = zmq_errno();
 
     my $rv   = zmq_connect( $socket, $where );
     my $rv   = zmq_bind( $socket, $where );
@@ -67,6 +68,8 @@ ZMQ - A libzmq wrapper for Perl
     my $rv   = zmq_setsockopt( $socket, $option, $value );
     my $val  = zmq_getsockopt( $socket, $option );
     my $rv   = zmq_bind( $sock, $addr );
+    my $rv   = zmq_send( $sock, $data, $len, $flags );
+    my $rv   = zmq_recv( $sock, $buffer, $len, $flags );
     my $rv   = zmq_sendmsg( $sock, $msg, $flags );
     my $msg  = zmq_recvmsg( $sock, $flags );
 
@@ -173,6 +176,23 @@ Or, you may choose use C<recv()>, if you know the amount of data you wanted to r
     my $buf;
     my $length = ...;
     my $n_read = $socket->recv( $buf, $length );
+
+=head1 ERRORS
+
+Once you spot that a ZMQ operation failed either because an exception was raised or because the return value indicated an error, ZMQ errors are available either from C<zmq_errno()> and C<zmq_strerror()> functions, or the C<$!> global variable.
+
+    use ZMQ;
+    use ZMQ::Raw qw(zmq_errno);
+
+    ...
+    eval { $socket->connect(...) };
+
+    # then...
+    my $errno = zmq_errno();
+    warn zmq_strerror($errno);
+
+    # or...
+    warn "$!";
 
 =head1 ASYNCHRONOUS I/O WITH ZEROMQ
 

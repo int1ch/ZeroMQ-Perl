@@ -17,6 +17,7 @@ PerlZMQ_set_bang(pTHX_ int err) {
     SV *errsv = get_sv("!", GV_ADD);
     PerlZMQ_trace(" + Set ERRSV ($!) to %d", err);
     sv_setiv(errsv, err);
+    sv_setpv(errsv, zmq_strerror(err));
 }
 
 STATIC_INLINE int
@@ -238,6 +239,10 @@ PROTOTYPES: DISABLED
 
 int
 zmq_errno()
+
+char *
+zmq_strerror(num)
+        int num;
 
 PerlZMQ_Raw_Context *
 PerlZMQ_Raw_zmq_init( nthreads = 5 )

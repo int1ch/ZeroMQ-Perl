@@ -16,6 +16,7 @@ our @EXPORT = qw(
     zmq_init
     zmq_term
     zmq_errno
+    zmq_strerror
 
     zmq_msg_close
     zmq_msg_data

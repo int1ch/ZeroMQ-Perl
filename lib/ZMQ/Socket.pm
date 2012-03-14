@@ -184,6 +184,8 @@ incoming connections with the C<bind> method.
 The C<bind($endpoint)> method function creates an endpoint for accepting
 connections and binds it to the socket.
 
+If an error occurs ( C<zmq_bind()> returns a non-zero status ), then an exception is throw.
+
 Quoting the 0MQ manual:
 The endpoint argument is a string consisting of two parts as
 follows: C<transport://address>. The transport part specifies the
@@ -222,6 +224,8 @@ using C<bind($endpoint>)>. The exact semantics depend on the socket type.
 
 Connect to an existing endpoint. Takes an enpoint string as argument,
 see the documentation for C<bind($endpoint)> above.
+
+If an error occurs ( C<zmq_connect()> returns a non-zero status ), then an exception is throw.
 
 =head2 close
 
