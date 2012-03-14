@@ -248,6 +248,10 @@ for details regarding multi-part messages.
 
 =back
 
+=head2 recv( $buf, $len, $flag )
+
+Reads up to $len bytes, and writes to $buf.
+
 =head2 recvmsg
 
 The C<my $msg = $sock-E<gt>recvmsg($flags)> method receives a message from
