@@ -21,6 +21,6 @@ my $sock = $ctxt->socket(ZMQ_REQ);
 $sock->connect( "tcp://$host:$port" );
 $sock->send("hello");
 
-my $message = $sock->recv();
+my $message = $sock->recvmsg();
 
 print $message->data, "\n";

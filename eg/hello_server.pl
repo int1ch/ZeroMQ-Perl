@@ -21,7 +21,7 @@ my $sock = $ctxt->socket(ZMQ_REP);
 $sock->bind( "tcp://$host:$port" );
 
 while (1) {
-    my $message = $sock->recv();
+    my $message = $sock->recvmsg();
     print $message->data, "\n";
     $sock->send("world");
 }
