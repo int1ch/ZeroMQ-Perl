@@ -18,7 +18,7 @@ subtest 'Constants defined in XS are available in exports' => sub {
 
     my %available = map { ($_ => 1) } @ZMQ::Constants::EXPORT_OK;
 
-    foreach my $symbol ( keys %symbols ) {
+    foreach my $symbol ( sort keys %symbols ) {
         ok $available{$symbol}, "$symbol exists";
     }
 };

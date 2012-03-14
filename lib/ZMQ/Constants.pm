@@ -10,19 +10,25 @@ use ZMQ ();
 our %EXPORT_TAGS = (
 # socket types
     socket => [ qw(
+        ZMQ_IPV4ONLY
+        ZMQ_LAST_ENDPOINT
+        ZMQ_RCVTIMEO
+        ZMQ_SNDTIMEO
+        ZMQ_MAXMSGSIZE
+        ZMQ_MULTICAST_HOPS
+        ZMQ_ROUTER
         ZMQ_PAIR
         ZMQ_PUB
         ZMQ_SUB
         ZMQ_REQ
         ZMQ_REP
+        ZMQ_DEALER
         ZMQ_XREQ
         ZMQ_XREP
         ZMQ_XSUB
         ZMQ_XPUB
         ZMQ_PULL
         ZMQ_PUSH
-        ZMQ_UPSTREAM
-        ZMQ_DOWNSTREAM
         ZMQ_BACKLOG
         ZMQ_FD
         ZMQ_LINGER
@@ -41,14 +47,12 @@ our %EXPORT_TAGS = (
     qw(
         ZMQ_SNDHWM
         ZMQ_RCVHWM
-        ZMQ_SWAP
         ZMQ_AFFINITY
         ZMQ_IDENTITY
         ZMQ_SUBSCRIBE
         ZMQ_UNSUBSCRIBE
         ZMQ_RATE
         ZMQ_RECOVERY_IVL
-        ZMQ_MCAST_LOOP
         ZMQ_SNDBUF
         ZMQ_RCVBUF
         ZMQ_RCVMORE
@@ -60,32 +64,15 @@ our %EXPORT_TAGS = (
         ZMQ_POLLERR
     ),
     ],
-# devices
-    device => [ qw(
-        ZMQ_QUEUE
-        ZMQ_FORWARDER
-        ZMQ_STREAMER
-    ), ],
-# max size of vsm message
     message => [ qw(
-        ZMQ_MAX_VSM_SIZE
+        ZMQ_MORE
     ),
-# message types
-    qw(
-        ZMQ_DELIMITER
-        ZMQ_VSM
-    ),
-# message flags
-    qw(
-        ZMQ_MSG_MORE
-        ZMQ_MSG_SHARED
-    ),]
+    ]
 );
 
 $EXPORT_TAGS{all} = [ map { @$_ } values %EXPORT_TAGS ];
 our @EXPORT_OK = (
     qw(
-        ZMQ_RECOVERY_IVL_MSEC
         ZMQ_HAUSNUMERO
         ZMQ_VERSION
         ZMQ_VERSION_MAJOR
@@ -137,10 +124,6 @@ The exportable constants are:
 
 =item ZMQ_PUSH
 
-=item ZMQ_UPSTREAM
-
-=item ZMQ_DOWNSTREAM
-
 =item ZMQ_BACKLOG
 
 =item ZMQ_FD
@@ -163,8 +146,6 @@ The exportable constants are:
 
 =item ZMQ_RCVHWM
 
-=item ZMQ_SWAP
-
 =item ZMQ_AFFINITY
 
 =item ZMQ_IDENTITY
@@ -176,8 +157,6 @@ The exportable constants are:
 =item ZMQ_RATE
 
 =item ZMQ_RECOVERY_IVL
-
-=item ZMQ_MCAST_LOOP
 
 =item ZMQ_SNDBUF
 
@@ -193,31 +172,11 @@ The exportable constants are:
 
 =back
 
-=head2 C<:device> - Device types
-
-=over 4
-
-=item ZMQ_QUEUE
-
-=item ZMQ_FORWARDER
-
-=item ZMQ_STREAMER
-
-=back
-
 =head2 C<:message> - Message Options
 
 =over 4
 
-=item ZMQ_MAX_VSM_SIZE
-
-=item ZMQ_DELIMITER
-
-=item ZMQ_VSM
-
-=item ZMQ_MSG_MORE
-
-=item ZMQ_MSG_SHARED
+=item ZMQ_MORE
 
 =back
 
@@ -234,8 +193,6 @@ The exportable constants are:
 =item ZMQ_VERSION_MINOR
 
 =item ZMQ_VERSION_PATCH
-
-=item ZMQ_RECOVERY_IVL_MSEC
 
 =back
 
