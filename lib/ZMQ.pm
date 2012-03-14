@@ -22,6 +22,11 @@ sub import {
     }
 }
 
+sub version {
+    my ($major, $minor, $patch) = ZMQ::Raw::zmq_version();
+    wantarray ? ($major, $minor, $patch) : join '.', $major, $minor, $patch;
+}
+
 1;
 __END__
 

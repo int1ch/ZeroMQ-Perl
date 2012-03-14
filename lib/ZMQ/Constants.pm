@@ -3,37 +3,9 @@ use strict;
 use base qw(Exporter);
 use ZMQ ();
 
-# TODO: keep in sync with docs below and Makefile.PL
-
-BEGIN {
-    my @possibly_nonexistent = qw(
-        ZMQ_BACKLOG
-        ZMQ_FD
-        ZMQ_LINGER
-        ZMQ_EVENTS
-        ZMQ_RECONNECT_IVL
-        ZMQ_SWAP
-        ZMQ_TYPE
-        ZMQ_VERSION
-        ZMQ_VERSION_MAJOR
-        ZMQ_VERSION_MINOR
-        ZMQ_VERSION_PATCH
-    );
-    my $version = ZMQ::version();
-    foreach my $symbol (@possibly_nonexistent) {
-        if (! __PACKAGE__->can($symbol) ) {
-            no strict 'refs';
-            *{$symbol} = sub { Carp::croak("$symbol is not available in zeromq2 $version") };
-
-        };
-    }
-}
-
 # XXX ZMQ_NOBLOCK needs to be deprecated, but doing this for compat
 # for now... we need to get rid of it when we release it
-if ( ZMQ_VERSION_MAJOR >= 3 ) {
-    *ZMQ_NOBLOCK = \&ZMQ_DONTWAIT;
-}
+*ZMQ_NOBLOCK = \&ZMQ_DONTWAIT;
 
 our %EXPORT_TAGS = (
 # socket types

@@ -17,6 +17,7 @@ our @EXPORT = qw(
     zmq_term
     zmq_errno
     zmq_strerror
+    zmq_version
 
     zmq_msg_close
     zmq_msg_data
@@ -60,6 +61,12 @@ ZMQ::Raw - Low-level API for ZMQ
     $errno = zmq_errno()
 
 Returns the previou value set to libzmq's errno 
+
+=head2 zmq_strerror( $err )
+
+=head2 zmq_version
+
+    ($major, $minor, $patch) = zmq_version()
 
 =head2 zmq_term
 

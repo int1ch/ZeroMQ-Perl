@@ -206,29 +206,6 @@ BOOT:
         PerlZMQ_trace( "Booting Perl ZMQ" );
     }
 
-void
-PerlZMQ_version()
-    PREINIT:
-        int major, minor, patch;
-        I32 gimme;
-    PPCODE:
-        gimme = GIMME_V;
-        if (gimme == G_VOID) {
-            /* WTF? you don't want a return value?! */
-            XSRETURN(0);
-        }
-
-        zmq_version(&major, &minor, &patch);
-        if (gimme == G_SCALAR) {
-            XPUSHs( sv_2mortal( newSVpvf( "%d.%d.%d", major, minor, patch ) ) );
-            XSRETURN(1);
-        } else {
-            mXPUSHi( major );
-            mXPUSHi( minor );
-            mXPUSHi( patch );
-            XSRETURN(3);
-        }
-
 MODULE = ZMQ    PACKAGE = ZMQ::Constants 
 
 INCLUDE: const-xs.inc
@@ -243,6 +220,17 @@ zmq_errno()
 char *
 zmq_strerror(num)
         int num;
+
+void
+PerlZMQ_Raw_zmq_version()
+    PREINIT:
+        int major, minor, patch;
+    CODE:
+        zmq_version( &major, &minor, &patch );
+        mXPUSHi( major );
+        mXPUSHi( minor );
+        mXPUSHi( patch );
+        XSRETURN(3);
 
 PerlZMQ_Raw_Context *
 PerlZMQ_Raw_zmq_init( nthreads = 5 )
