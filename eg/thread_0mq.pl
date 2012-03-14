@@ -36,7 +36,7 @@ sub local {
   my $msg;
   foreach ( 1 .. $roundtrip_count ) {
     #warn "$_\n" if (not $_ % 1000);
-    $msg = $sock->recv();
+    $msg = $sock->recvmsg();
     die "Bad size" if $msg->size() != $msg_size;
     $sock->send($msg);
   }
@@ -58,7 +58,7 @@ sub remote {
   foreach ( 1 .. $roundtrip_count ) {
     #warn "$_\n" if (not $_ % 1000);
     $sock->send($msg);
-    $msg = $sock->recv();
+    $msg = $sock->recvmsg();
     die "Bad size" if $msg->size() != $msg_size;
   }
   my $after = time();

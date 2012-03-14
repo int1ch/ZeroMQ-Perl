@@ -24,7 +24,7 @@ my $before = time();
 foreach (1..$roundtrip_count) {
   #warn "$_\n" if (not $_ % 1000);
   $sock->send($msg);
-  $msg = $sock->recv();
+  $msg = $sock->recvmsg();
   die "Bad size" if $msg->size() != $msg_size;
 }
 my $after = time();

@@ -24,6 +24,6 @@ print "Connecting to server...\n";
 $sock->connect( "tcp://$host:$port" );
 for (1..10) {
     $sock->send("Hello $$");
-    my $message = $sock->recv();
+    my $message = $sock->recvmsg();
     print $message->data, "\n";
 }

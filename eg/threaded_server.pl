@@ -35,7 +35,7 @@ for (1..5) {
         zmq_connect( $wsock, "inproc://workers" );
 
         while (1) {
-            my $message = zmq_recv( $wsock );
+            my $message = zmq_recvmsg( $wsock );
             print zmq_msg_data($message), "\n";
             sleep 1; # Do some dummy "work"
 
