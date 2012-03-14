@@ -30,6 +30,7 @@ subtest '(Low-Level API) connect before server socket is bound (should fail)' =>
     my $client = zmq_socket($cxt, ZMQ_PAIR);
     isnt zmq_connect($client, "inproc://myPrivateSocket"), 0, "Connect should fail";
     like "$!", qr/Connection refused/;
+    is $! + 0, zmq_errno(), "\$! = zmq_errno()";
 };
 
 subtest 'basic inproc communication' => sub {

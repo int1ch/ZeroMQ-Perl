@@ -15,6 +15,7 @@ BEGIN {
 our @EXPORT = qw(
     zmq_init
     zmq_term
+    zmq_errno
 
     zmq_msg_close
     zmq_msg_data
@@ -53,6 +54,12 @@ ZMQ::Raw - Low-level API for ZMQ
 
 =head2 zmq_init
 
+=head2 zmq_errno
+
+    $errno = zmq_errno()
+
+Returns the previou value set to libzmq's errno 
+
 =head2 zmq_term
 
 =head2 zmq_msg_close
@@ -79,11 +86,17 @@ ZMQ::Raw - Low-level API for ZMQ
 
 =head2 zmq_getsockopt
 
+=head2 zmq_recv
+
+    $bytes_read = zmq_recv( $socket, $buffer, $size, $flags )
+
+Reads a message up to C<$size> bytes, and writes to C<$buffer>. Returns the number of bytes read, or -1 on error
+
 =head2 zmq_recvmsg
 
 =head2 zmq_send
 
-    $bytes_written = zmq_send( $buffer, $size, $flags )
+    $bytes_written = zmq_send( $socket, $buffer, $size, $flags )
 
 If C<$size> is set to -1, then the length is automatically calculated from $buffer. Default value is -1, but be careful, if you pass 0, then it's not the same as passing undef
 
@@ -92,8 +105,6 @@ If C<$size> is set to -1, then the length is automatically calculated from $buff
     
     # write 0 bytes!
     zmq_send( $buf, 0, $flags );
-
-=head2 zmq_send_as
 
 =head2 zmq_sendmsg( $msg_object )
 

@@ -236,6 +236,9 @@ MODULE = ZMQ    PACKAGE = ZMQ::Raw  PREFIX = PerlZMQ_Raw_
 
 PROTOTYPES: DISABLED
 
+int
+zmq_errno()
+
 PerlZMQ_Raw_Context *
 PerlZMQ_Raw_zmq_init( nthreads = 5 )
         int nthreads;
@@ -842,5 +845,4 @@ PerlZMQ_Raw_zmq_poll( list, timeout = 0 )
         PerlZMQ_trace( "END zmq_poll" );
     OUTPUT:
         RETVAL
-
 
