@@ -620,6 +620,8 @@ PerlZMQ_Raw_zmq_getsockopt(sock, option)
             case ZMQ_RECONNECT_IVL_MAX:
             case ZMQ_RCVMORE:
             case ZMQ_TYPE:
+            case ZMQ_RCVHWM:
+            case ZMQ_SNDHWM:
                 len = sizeof(i);
                 status = zmq_getsockopt(sock->socket, option, &i, &len);
                 if(status == 0)
@@ -633,8 +635,6 @@ PerlZMQ_Raw_zmq_getsockopt(sock, option)
                     RETVAL = newSViv(i64);
                 break;
 
-            case ZMQ_RCVHWM:
-            case ZMQ_SNDHWM:
             case ZMQ_AFFINITY:
             case ZMQ_SNDBUF:
             case ZMQ_RCVBUF:
@@ -697,8 +697,6 @@ PerlZMQ_Raw_zmq_setsockopt(sock, option, value)
                 RETVAL = zmq_setsockopt(sock->socket, option, &i64, sizeof(int64_t));
                 break;
 
-            case ZMQ_SNDHWM:
-            case ZMQ_RCVHWM:
             case ZMQ_AFFINITY:
             case ZMQ_SNDBUF:
             case ZMQ_RCVBUF:
@@ -710,6 +708,8 @@ PerlZMQ_Raw_zmq_setsockopt(sock, option, value)
             case ZMQ_RECONNECT_IVL:
             case ZMQ_RECONNECT_IVL_MAX:
             case ZMQ_LINGER:
+            case ZMQ_SNDHWM:
+            case ZMQ_RCVHWM:
                 i = SvIV(value);
                 RETVAL = zmq_setsockopt(sock->socket, option, &i, sizeof(i));
                 break;

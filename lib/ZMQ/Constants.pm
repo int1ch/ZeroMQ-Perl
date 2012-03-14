@@ -39,7 +39,8 @@ our %EXPORT_TAGS = (
     ),
 # get/setsockopt options
     qw(
-        ZMQ_HWM
+        ZMQ_SNDHWM
+        ZMQ_RCVHWM
         ZMQ_SWAP
         ZMQ_AFFINITY
         ZMQ_IDENTITY
@@ -158,7 +159,9 @@ The exportable constants are:
 
 =item ZMQ_SNDMORE
 
-=item ZMQ_HWM
+=item ZMQ_SNDHWM
+
+=item ZMQ_RCVHWM
 
 =item ZMQ_SWAP
 
