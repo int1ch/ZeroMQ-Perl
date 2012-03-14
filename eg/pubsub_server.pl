@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 use strict;
-use ZMQ qw(ZMQ_PUB);
+use ZMQ qw(ZMQ_PUB ZMQ_SNDHWM);
 
 my ($host, $port);
 
@@ -19,6 +19,7 @@ $port ||= 5566;
 my $ctxt = ZMQ::Context->new();
 my $sock = $ctxt->socket(ZMQ_PUB);
 $sock->bind( "tcp://$host:$port" );
+$sock->setsockopt( ZMQ_SNDHWM, 10 );
 
 my $count = 0;
 while (1) {

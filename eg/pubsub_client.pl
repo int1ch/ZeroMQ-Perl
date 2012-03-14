@@ -22,6 +22,6 @@ $sock->connect( "tcp://$host:$port" );
 $sock->setsockopt(ZMQ_SUBSCRIBE, "H");
 
 while (1) {
-    my $message = $sock->recv();
+    my $message = $sock->recvmsg();
     print $message->data, "\n";
 }
