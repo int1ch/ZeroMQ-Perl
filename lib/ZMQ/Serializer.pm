@@ -32,6 +32,7 @@ sub ZMQ::Socket::send_as {
     }
 
     my $body = $serializer->( $data );
+    require bytes;
     $self->send( $body, bytes::length($body), $flags );
 }
 
