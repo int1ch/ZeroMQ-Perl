@@ -220,7 +220,7 @@ hashrefs:
 
 Unfortunately this custom polling scheme doesn't play too well with AnyEvent.
 
-As of zeromq2-2.1.0, you can use getsockopt to retrieve the underlying file
+As an alternative you can use getsockopt to retrieve the underlying file
 descriptor, so use that to integrate ZMQ and AnyEvent:
 
     my $socket = zmq_socket( $ctxt, ZMQ_REP );
